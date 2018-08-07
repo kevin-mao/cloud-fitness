@@ -1,10 +1,11 @@
 import re
+import csv
 import requests
 from bs4 import  BeautifulSoup
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
 
-location='new york'
+location='staten island'
 #will be imported from user's search in future
 
 def query_first_page(location):
@@ -49,20 +50,28 @@ def link_organizer(google_list):
     return link_list
 
 def blacklisted_links(link):
-    if "yelp" in link:
-        return True
-    if "fitdaypass" in link:
-        return True
-    if "tripadvisor" in link:
-        return True
-    if "wheretraveler" in link:
-        return True
-    if "amny" in link:
-        return True
-    if "thrillist" in link:
-        return True
-    if "latimes" in link:
-        return True
+    with open('blacklist.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        # Opens csv file with website names that aren't gyms
+
+        for line in csv_reader:
+            if str(line[0]) in link:
+                return True
+                # Checks gym link and returns
+    # if "yelp" in link:
+    #     return True
+    # if "fitdaypass" in link:
+    #     return True
+    # if "tripadvisor" in link:
+    #     return True
+    # if "wheretraveler" in link:
+    #     return True
+    # if "amny" in link:
+    #     return True
+    # if "thrillist" in link:
+    #     return True
+    # if "latimes" in link:
+    #     return True
 
 def gym_name_finder(gym_links):
     gym_names=[]
@@ -76,22 +85,20 @@ def gym_name_finder(gym_links):
     return(gym_names)
 
 def gym_name_library(gym_link):
-    if 'retrofitness' in gym_link:
-        return 'Retro Fitness'
-    if 'planetfitness' in gym_link:
-        return 'Planet Fitness'
-    if 'lafitness' in gym_link:
-        return 'LA Fitness'
-    if 'crunch' in gym_link:
-        return 'Crunch'
-    if 'powerhouse' in gym_link:
-        return 'Power House'
-    if 'pushfitness' in gym_link:
-        return 'Push Fitness'
-    if 'planetfitness' in gym_link:
-        return 'Planet Fitness'
-    if '24hourfitness' in gym_link:
-        return'24 Hour Fitness'
+
+    with open('gym_library.csv', 'r') as csv_file:
+        csv_reader=csv.reader(csv_file)
+        #Opens csv file with gym link names and actual gym names
+
+        for line in csv_reader:
+            if str(line[0]) in gym_link:
+                gym_name=line[1]
+                gym_name = gym_name.replace("\t", "")
+                #For some reason the second column has \t in front of every gym name, so this removes that
+                return gym_name
+                #Checks gym link and returns
+
+
 
 
 
@@ -111,6 +118,8 @@ def main():
     list_of_gym_names=gym_name_finder(list_of_links)
 
     print(list_of_links)
+
+    print(list_of_gym_names)
 
 
 

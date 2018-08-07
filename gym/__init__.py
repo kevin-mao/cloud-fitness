@@ -1,11 +1,9 @@
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from gym.config import Config
-
 
 
 db = SQLAlchemy()
@@ -34,6 +32,9 @@ def create_app(config_class=Config):
 
     from gym.main.routes import main
     app.register_blueprint(main)
+
+    from gym.search.routes import search
+    app.register_blueprint(search)
 
     from gym.errors.handlers import errors
     app.register_blueprint(errors)

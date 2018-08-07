@@ -2,16 +2,14 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search
+#from gym.models import Search
 #need to create Search in models.py
 from gym.search.forms import SearchForm
 
 search = Blueprint('search', __name__)
-app.register_blueprint(search)
-
 
 @search.route("/search", methods=['GET', 'POST'])
-def search():
+def websearch():
     form = SearchForm()
     if form.validate_on_submit():
         #Search = Search(title=form.title.data, content=form.content.data, author=current_user)
@@ -29,6 +27,6 @@ def results():
     #Returns a page with a list of gym with free passes for the area searched.
     # page = request.args.get('page', 1, type=int)
     # posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('post.html', title=, post=post)
+    return render_template('post.html', title='Searh Results', post=post)
 
 
