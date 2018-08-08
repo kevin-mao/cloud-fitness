@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from gym import db
 from gym.models import Search
 from gym.search.forms import SearchForm
+import search.scraper
 
 search = Blueprint('search', __name__)
 
@@ -14,6 +15,7 @@ def websearch():
         Search = Search(content=form.content.data)
         query = Search.query.filter_by(user_input=Search).first()
         if query==None:
+            scraper.main()
             #run scraper function
 
         #db.session.add(post)
