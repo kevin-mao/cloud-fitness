@@ -44,3 +44,11 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
+class Search(db.Model):
+    user_input= db.Column(db.String(100), nullable=False)
+    results = db.relationship('Results', backref='results', lazy=True)
+
+class Results(db.Model):
+    link = db.Column(db.String(120), unique=True, nullable=False)
+    logo_image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    gym_name = db.Column(db.String(60), nullable=False)

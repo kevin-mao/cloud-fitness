@@ -2,8 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-#from gym.models import Search
-#need to create Search in models.py
+from gym.models import Search
 from gym.search.forms import SearchForm
 
 search = Blueprint('search', __name__)
@@ -12,11 +11,13 @@ search = Blueprint('search', __name__)
 def websearch():
     form = SearchForm()
     if form.validate_on_submit():
-        #Search = Search(title=form.title.data, content=form.content.data, author=current_user)
-        #needs to be changed to check if search has been made in database, if not then run search function
+        Search = Search(content=form.content.data)
+        query = Search.query.filter_by(user_input=Search).first()
+        if query==None:
+            #run scraper function
+
         #db.session.add(post)
         #db.session.commit()
-        flash('Your post has been created!', 'success')
         return redirect(url_for('search.results'))
     return render_template('search.html', title='Search',
                            form=form)

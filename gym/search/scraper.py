@@ -2,10 +2,11 @@ import re
 import csv
 import requests
 from bs4 import  BeautifulSoup
+from search.routes import Search
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
 
-location='staten island'
+location= Search
 #will be imported from user's search in future
 
 def query_first_page(location):
