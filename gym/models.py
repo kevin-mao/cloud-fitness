@@ -49,6 +49,7 @@ class Search(db.Model):
     results = db.relationship('Results', backref='results', lazy=True)
 
 class Results(db.Model):
-    link = db.Column(db.String(120), unique=True, nullable=False)
-    logo_image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    list_number=db.Column(db.Integer, nullable=False)
+    link = db.Column(db.String(150), unique=True, nullable=False)
+    logo_image_file = db.Column(db.String(40), nullable=False, default='default.jpg')
     gym_name = db.Column(db.String(60), nullable=False)

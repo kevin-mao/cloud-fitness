@@ -2,11 +2,11 @@ import re
 import csv
 import requests
 from bs4 import  BeautifulSoup
-from search.routes import Search
+#from search.routes import Search
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
 
-location= Search
+location= 'Staten Island'
 #will be imported from user's search in future
 
 def query_first_page(location):
@@ -59,26 +59,14 @@ def blacklisted_links(link):
             if str(line[0]) in link:
                 return True
                 # Checks gym link and returns
-    # if "yelp" in link:
-    #     return True
-    # if "fitdaypass" in link:
-    #     return True
-    # if "tripadvisor" in link:
-    #     return True
-    # if "wheretraveler" in link:
-    #     return True
-    # if "amny" in link:
-    #     return True
-    # if "thrillist" in link:
-    #     return True
-    # if "latimes" in link:
-    #     return True
+
 
 def gym_name_finder(gym_links):
     gym_names=[]
     for gym_link in gym_links:
         actual_name=gym_name_library(gym_link)
-        gym_names.append(actual_name)
+        if actual_name:
+            gym_names.append(actual_name)
         #Checks gym link to see what the gym name is in how
         #one would usually write it.
 
@@ -99,7 +87,18 @@ def gym_name_library(gym_link):
                 return gym_name
                 #Checks gym link and returns
 
+def image_finder(gym_names):
+    gym_images_list=[]
 
+    for gym_name in gym_names:
+        gym_image = gym_name.replace(" ", "_")
+        gym_image = gym_image + '.jpg'
+        # For some reason the second column has \t in front of every gym image gile name, so this removes that
+        gym_images_list.append(gym_image)
+
+        # Returns image file name
+
+    return gym_images_list
 
 
 
@@ -117,10 +116,9 @@ def main():
 
     list_of_links=link_organizer(list_of_results)
     list_of_gym_names=gym_name_finder(list_of_links)
-
-    print(list_of_links)
-
+    list_of_gym_images=image_finder(list_of_gym_names)
     print(list_of_gym_names)
+    print(list_of_gym_images)
 
 
 
