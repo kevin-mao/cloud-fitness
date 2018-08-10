@@ -46,10 +46,14 @@ class Post(db.Model):
 
 class Search(db.Model):
     user_input= db.Column(db.String(100), nullable=False)
-    results = db.relationship('Results', backref='results', lazy=True)
+    list = db.relationship('List', backref='list', lazy=True)
 
-class Results(db.Model):
+class List(db.Model):
     list_number=db.Column(db.Integer, nullable=False)
+    items= db.relationship('Items', backref='list', lazy=True)
+
+class Items(db.Model):
     link = db.Column(db.String(150), unique=True, nullable=False)
     logo_image_file = db.Column(db.String(40), nullable=False, default='default.jpg')
     gym_name = db.Column(db.String(60), nullable=False)
+

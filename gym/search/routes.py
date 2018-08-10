@@ -18,8 +18,10 @@ def websearch():
             scraper.main()
             #run scraper function
 
-        #db.session.add(post)
-        #db.session.commit()
+
+        else:
+            #Use results from that prior query already stored
+
         return redirect(url_for('search.results'))
     return render_template('search.html', title='Search',
                            form=form)
