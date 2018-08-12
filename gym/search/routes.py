@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from gym import db
 from gym.models import Search
 from gym.search.forms import SearchForm
-import search.scraper
+from gym.search.scraper import *
 
 search = Blueprint('search', __name__)
 
@@ -19,7 +19,7 @@ def websearch():
             #run scraper function
 
 
-        else:
+        #else:
             #Use results from that prior query already stored
 
         return redirect(url_for('search.results'))

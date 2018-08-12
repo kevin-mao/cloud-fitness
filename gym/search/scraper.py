@@ -51,7 +51,7 @@ def link_organizer(google_list):
     return link_list
 
 def blacklisted_links(link):
-    with open('blacklist.csv', 'r') as csv_file:
+    with open('./gym/search/blacklist.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with website names that aren't gyms
 
@@ -75,7 +75,7 @@ def gym_name_finder(gym_links):
 
 def gym_name_library(gym_link):
 
-    with open('gym_library.csv', 'r') as csv_file:
+    with open('./gym/search/gym_library.csv', 'r') as csv_file:
         csv_reader=csv.reader(csv_file)
         #Opens csv file with gym link names and actual gym names
 
