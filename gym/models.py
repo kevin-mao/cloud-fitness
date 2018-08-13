@@ -66,9 +66,9 @@ class Search(db.Model):
 class Items(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
-    link = db.Column(db.String(150), unique=True, nullable=False, primary_key=True)
-    logo_image_file = db.Column(db.String(40), nullable=False, default='default.jpg')
-    gym_name = db.Column(db.String(60), nullable=False)
+    link = db.Column(db.String(150))
+    logo_image_file = db.Column(db.String(40),default='default.jpg')
+    gym_name = db.Column(db.String(60))
 
     def __repr__(self):
         return str('Item:' + self.gym_name)
