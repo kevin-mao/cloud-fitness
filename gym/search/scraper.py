@@ -6,7 +6,7 @@ from bs4 import  BeautifulSoup
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
 
-location= 'Staten Island'
+
 #will be imported from user's search in future
 
 def query_first_page(location):
@@ -67,6 +67,8 @@ def gym_name_finder(gym_links):
         actual_name=gym_name_library(gym_link)
         if actual_name:
             gym_names.append(actual_name)
+        else:
+            gym_names.append('Gym Name Not Found')
         #Checks gym link to see what the gym name is in how
         #one would usually write it.
 
@@ -102,7 +104,7 @@ def image_finder(gym_names):
 
 
 
-def main():
+def main(location):
 
     list_of_results=[]
 
@@ -117,11 +119,16 @@ def main():
     list_of_links=link_organizer(list_of_results)
     list_of_gym_names=gym_name_finder(list_of_links)
     list_of_gym_images=image_finder(list_of_gym_names)
-    print(list_of_gym_names)
-    print(list_of_gym_images)
+
+    results = []
+
+    for i in range(len(list_of_links)):
+        results.append([list_of_links[i], list_of_gym_names[i],list_of_gym_images[i]])
+
+
+    return results
 
 
 
-
-
-main()
+if __name__ == '__main__':
+    main()

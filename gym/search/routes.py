@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.search_models import Search
+from gym.models import Search, Items
 from gym.search.forms import SearchForm
 from gym.search.scraper import *
 
@@ -12,19 +12,26 @@ search = Blueprint('search', __name__)
 def websearch():
     form = SearchForm()
     if form.validate_on_submit():
-        Search = Search(content=form.content.data)
-        query = Search.query.filter_by(user_input=Search).first()
-        if query==None:
-            scraper.main()
-            search = Search(user_input=query)
-            db.add(search)
-            #run scraper function
+        query = Search(user_input=form.search.data)
+        check_db = Search.query.filter_by(user_input=query.user_input).first()
 
+        if check_db==None:
+            info=scraper.main(query.user_input)
+            item_count=0
+            results=[]
+            for result in info:
+                link = result[0]
+                name = result[1]
+                image = result[2]
+                item = Items(link=link, logo_image_file=image, gym_name=name, id=item_count, search=query)
+                item_count += 1
+                results.append(item)
+            db.session.add(query)
+            db.session.commit()
+        else:
+            results = check_db.items
 
-       # else:
-            #Use results from that prior query already stored
-
-        return redirect(url_for('search.results'))
+        return redirect(url_for('results'), title='Search Results', results=results)
     return render_template('search.html', title='Search',
                            form=form)
 
@@ -32,8 +39,6 @@ def websearch():
 @search.route("/results")
 def results():
     #Returns a page with a list of gym with free passes for the area searched.
-    # page = request.args.get('page', 1, type=int)
-    # posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('post.html', title='Searh Results', post=post)
+    return render_template('results.html', title='Search Results')
 
 

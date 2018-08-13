@@ -1,4 +1,5 @@
 from gym import db
+from flask import current_app
 
 class Search(db.Model):
     id = db.Column(db.Integer, primary_key=True)

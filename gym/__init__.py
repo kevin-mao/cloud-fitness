@@ -14,7 +14,6 @@ login_manager.login_message_category = 'info'
 
 mail = Mail()
 
-
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -38,5 +37,6 @@ def create_app(config_class=Config):
 
     from gym.errors.handlers import errors
     app.register_blueprint(errors)
+
 
     return app
