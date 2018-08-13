@@ -44,7 +44,8 @@ def link_organizer(google_list):
             gym_link = gym_link.replace("/url?q=", "")
             #Gets the actual link and removes extra stuff on it to make the link "clickable"
             if blacklisted_links(gym_link)==None:
-                link_list.append(gym_link)
+                if gym_name_library(gym_link):
+                    link_list.append(gym_link)
                 #Checks the link is actually for a gym
 
 
@@ -82,7 +83,7 @@ def gym_name_library(gym_link):
         #Opens csv file with gym link names and actual gym names
 
         for line in csv_reader:
-            if str(line[0]) in gym_link:
+            if line[0] in gym_link:
                 gym_name=line[1]
                 gym_name = gym_name.replace("\t", "")
                 #For some reason the second column has \t in front of every gym name, so this removes that

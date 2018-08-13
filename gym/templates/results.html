@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for result in results[:5] %}
+    {% for result in results[:10] %}
         <article class="media content-section">
-            <h2> <a class="article-title" href="{{ result.link}}">{{ result.gym_name }}</a></h2>
-          </div>
+            <h2><img class="rounded-circle article-img" src="{{ url_for('static', filename='gym_pics/' + result.logo_image_file) }}">
+                <a class="article-title" href="{{ result.link}}">{{ result.gym_name }}</a></h2>
+          
         </article>
     {% endfor %}
 {% endblock content %}
