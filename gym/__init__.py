@@ -34,8 +34,8 @@ def create_app(config_class=Config):
     from gym.main.routes import main
     app.register_blueprint(main)
 
-    from gym.search.routes import search
-    app.register_blueprint(search)
+    # from gym.search.routes import search
+    # app.register_blueprint(search)
 
     from gym.errors.handlers import errors
     app.register_blueprint(errors)
