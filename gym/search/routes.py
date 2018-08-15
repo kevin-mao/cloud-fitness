@@ -31,7 +31,7 @@ def websearch():
             results = check_db.items
 
         return render_template('results.html', title='Search Results', results=results)
-    return render_template('search.html', title='Search',
+    return render_template('home.html', title='Search',
                            form=form)
 
 

@@ -1,28 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-<form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <fieldset class="form-group">
-        <legend class="border-bottom mb-4">Search for gym passes near you!</legend>
-
-        <div class="form-group">
-            {{ form.search.label(class="form-control-label") }}
-            {% if form.search.errors %}
-                {{ form.search(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.search.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.search(class="form-control form-control-lg") }}
-            {% endif %}
-        </div>
-
-    </fieldset>
-    <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
-    </div>
     {% for post in posts.items %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
@@ -47,5 +24,4 @@
         ...
       {% endif %}
     {% endfor %}
- 
 {% endblock content %}
