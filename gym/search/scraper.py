@@ -1,7 +1,7 @@
 import re
 import csv
 import requests
-from bs4 import  BeautifulSoup
+from bs4 import BeautifulSoup
 #from search.routes import Search
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
@@ -105,7 +105,7 @@ def image_finder(gym_names):
 
 
 
-def main(location):
+def scrape(location):
 
     list_of_results=[]
 
@@ -132,4 +132,4 @@ def main(location):
 
 
 if __name__ == '__main__':
-    main()
+    scrape()
