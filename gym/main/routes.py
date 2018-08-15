@@ -23,12 +23,18 @@ def about():
 
 @main.route("/blog")
 def blog():
-    return render_template('blog.html', title='Blog')
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+   
+    return render_template('blog.html', title='Blog', posts=posts)
 
 @main.route("/")
 @main.route("/home", methods=['GET', 'POST'])
-def websearch():
+def home():
     form = SearchForm()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+
     if form.validate_on_submit():
         query = Search(user_input=form.search.data)
         check_db = Search.query.filter_by(user_input=query.user_input).first()
@@ -46,11 +52,10 @@ def websearch():
             db.session.commit()
         else:
             results = check_db.items
-        page = request.args.get('page', 1, type=int)
-        posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+        
         return render_template('results.html', title='Search Results', results=results, posts=posts)
     return render_template('home.html', title='Search',
-                           form=form)
+                           form=form, posts=posts)
 
 
 @main.route("/results",methods=['GET', 'POST'])
