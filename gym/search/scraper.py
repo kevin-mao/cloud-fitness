@@ -64,17 +64,22 @@ def blacklisted_links(link):
 
 def gym_name_finder(gym_links):
     gym_names=[]
+    modified_links=[]
+    count=0
     for gym_link in gym_links:
         actual_name=gym_name_library(gym_link)
         if actual_name:
-            gym_names.append(actual_name)
+            if actual_name not in gym_names:
+                gym_names.append(actual_name)
+                modified_links.append(gym_link)
         else:
             gym_names.append('Gym Name Not Found')
         #Checks gym link to see what the gym name is in how
         #one would usually write it.
+        count+=1
+    gym_names_and_links=(gym_names, modified_links)
 
-
-    return(gym_names)
+    return gym_names_and_links
 
 def gym_name_library(gym_link):
 
@@ -118,7 +123,9 @@ def scrape(location):
     list_of_results.append(list_of_results_second)
 
     list_of_links=link_organizer(list_of_results)
-    list_of_gym_names=gym_name_finder(list_of_links)
+    list_of_gym_names_and_links=gym_name_finder(list_of_links)
+    list_of_gym_names=list_of_gym_names_and_links[0]
+    list_of_links = list_of_gym_names_and_links[1]
     list_of_gym_images=image_finder(list_of_gym_names)
 
     results = []
