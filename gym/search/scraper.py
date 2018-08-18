@@ -27,7 +27,7 @@ def query_second_page(location):
 
     return second_web_page
 
-def parser(response):
+def gyms_parser(response):
     html_soup = BeautifulSoup(response.text, 'html.parser')
     search_results= html_soup.find_all('h3', class_ = 'r')
     #Turns the get request into soup and gets the results, which are a list of h3 divisons
@@ -108,6 +108,39 @@ def image_finder(gym_names):
 
     return gym_images_list
 
+# def location_finder(location, gym_names):
+#     locations=[]
+#     location.replace(" ", "+")
+#     for gym_name in gym_names:
+#         gym_name.replace(" ", "+")
+#
+#         locations_search_url = "https://www.google.com/search?q="+gym_name+"in"+location
+#         locations_web_page = requests.get(locations_search_url, headers=headers)
+#
+#         html_soup = BeautifulSoup(locations_web_page.text, 'html.parser')
+#         # locations_results = html_soup.find_all('div', {"class": "section-result-details-container"}).find('span', {"class": "section-result-location"})
+#         # for location in locations_results:
+#         #     locations.append(location.text)
+#     # print(locations)
+#     # print(locations_results)
+
+def description(gym_names):
+    gym_descriptions = []
+    with open('./gym/search/descriptions.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        # Opens csv file with website names that aren't gyms
+
+        for line in csv_reader:
+            for gym_name in gym_names:
+                if str(line[0]) in gym_name:
+                    gym_description=line[1]
+                    gym_description = gym_description.replace("\t", "")
+                    gym_descriptions.append(gym_description)
+
+    return gym_descriptions
+
+
+
 
 
 def scrape(location):
@@ -115,11 +148,11 @@ def scrape(location):
     list_of_results=[]
 
     google_search_first=query_first_page(location)
-    list_of_results_first=parser(google_search_first)
+    list_of_results_first=gyms_parser(google_search_first)
     list_of_results.append(list_of_results_first)
 
     google_search_second = query_first_page(location)
-    list_of_results_second=parser(google_search_second)
+    list_of_results_second=gyms_parser(google_search_second)
     list_of_results.append(list_of_results_second)
 
     list_of_links=link_organizer(list_of_results)
@@ -127,6 +160,10 @@ def scrape(location):
     list_of_gym_names=list_of_gym_names_and_links[0]
     list_of_links = list_of_gym_names_and_links[1]
     list_of_gym_images=image_finder(list_of_gym_names)
+    list_of_gym_descriptions=description(list_of_gym_names)
+    
+
+
 
     results = []
 
