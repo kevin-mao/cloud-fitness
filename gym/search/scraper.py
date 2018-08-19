@@ -2,6 +2,7 @@ import re
 import csv
 import requests
 from bs4 import BeautifulSoup
+from pathlib import Path
 #from search.routes import Search
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
@@ -102,8 +103,12 @@ def image_finder(gym_names):
         gym_image = gym_name.replace(" ", "_")
         gym_image = gym_image + '.jpg'
         # For some reason the second column has \t in front of every gym image gile name, so this removes that
-        gym_images_list.append(gym_image)
-
+        my_file = Path("./gym/static/gym_pics"+gym_image)
+        if my_file.is_file():
+            # file exists
+            gym_images_list.append(gym_image)
+        else:
+            gym_images_list.append('default.jpg')
         # Returns image file name
 
     return gym_images_list
