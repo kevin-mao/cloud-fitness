@@ -2,6 +2,7 @@ import re
 import csv
 import requests
 from bs4 import BeautifulSoup
+from pathlib import Path
 #from search.routes import Search
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 #Headers modifies how requests contacts google.com; without it Google recongizes the scraper and returns incorrect links
@@ -27,7 +28,7 @@ def query_second_page(location):
 
     return second_web_page
 
-def parser(response):
+def gyms_parser(response):
     html_soup = BeautifulSoup(response.text, 'html.parser')
     search_results= html_soup.find_all('h3', class_ = 'r')
     #Turns the get request into soup and gets the results, which are a list of h3 divisons
@@ -64,17 +65,22 @@ def blacklisted_links(link):
 
 def gym_name_finder(gym_links):
     gym_names=[]
+    modified_links=[]
+    count=0
     for gym_link in gym_links:
         actual_name=gym_name_library(gym_link)
         if actual_name:
-            gym_names.append(actual_name)
+            if actual_name not in gym_names:
+                gym_names.append(actual_name)
+                modified_links.append(gym_link)
         else:
             gym_names.append('Gym Name Not Found')
         #Checks gym link to see what the gym name is in how
         #one would usually write it.
+        count+=1
+    gym_names_and_links=(gym_names, modified_links)
 
-
-    return(gym_names)
+    return gym_names_and_links
 
 def gym_name_library(gym_link):
 
@@ -98,11 +104,48 @@ def image_finder(gym_names):
         gym_image = gym_name.replace(" ", "_")
         gym_image = gym_image + '.jpg'
         # For some reason the second column has \t in front of every gym image gile name, so this removes that
-        gym_images_list.append(gym_image)
-
+        my_file = Path("./gym/static/gym_pics"+gym_image)
+        if my_file.is_file():
+            # file exists
+            gym_images_list.append(gym_image)
+        else:
+            gym_images_list.append('default.jpg')
         # Returns image file name
 
     return gym_images_list
+
+# def location_finder(location, gym_names):
+#     locations=[]
+#     location.replace(" ", "+")
+#     for gym_name in gym_names:
+#         gym_name.replace(" ", "+")
+#
+#         locations_search_url = "https://www.google.com/search?q="+gym_name+"in"+location
+#         locations_web_page = requests.get(locations_search_url, headers=headers)
+#
+#         html_soup = BeautifulSoup(locations_web_page.text, 'html.parser')
+#         # locations_results = html_soup.find_all('div', {"class": "section-result-details-container"}).find('span', {"class": "section-result-location"})
+#         # for location in locations_results:
+#         #     locations.append(location.text)
+#     # print(locations)
+#     # print(locations_results)
+
+def description(gym_names):
+    gym_descriptions = []
+    with open('./gym/search/descriptions.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        # Opens csv file with website names that aren't gyms
+
+        for line in csv_reader:
+            for gym_name in gym_names:
+                if str(line[0]) in gym_name:
+                    gym_description=line[1]
+                    gym_description = gym_description.replace("\t", "")
+                    gym_descriptions.append(gym_description)
+
+    return gym_descriptions
+
+
 
 
 
@@ -111,21 +154,27 @@ def scrape(location):
     list_of_results=[]
 
     google_search_first=query_first_page(location)
-    list_of_results_first=parser(google_search_first)
+    list_of_results_first=gyms_parser(google_search_first)
     list_of_results.append(list_of_results_first)
 
     google_search_second = query_first_page(location)
-    list_of_results_second=parser(google_search_second)
+    list_of_results_second=gyms_parser(google_search_second)
     list_of_results.append(list_of_results_second)
 
     list_of_links=link_organizer(list_of_results)
-    list_of_gym_names=gym_name_finder(list_of_links)
+    list_of_gym_names_and_links=gym_name_finder(list_of_links)
+    list_of_gym_names=list_of_gym_names_and_links[0]
+    list_of_links = list_of_gym_names_and_links[1]
     list_of_gym_images=image_finder(list_of_gym_names)
+    list_of_gym_descriptions=description(list_of_gym_names)
+    
+    print(list_of_gym_descriptions)
+
 
     results = []
 
     for i in range(len(list_of_links)):
-        results.append([list_of_links[i], list_of_gym_names[i],list_of_gym_images[i]])
+        results.append([list_of_links[i], list_of_gym_names[i],list_of_gym_images[i], list_of_gym_descriptions[i]])
 
 
     return results

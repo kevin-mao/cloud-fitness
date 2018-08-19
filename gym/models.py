@@ -70,8 +70,7 @@ class Items(db.Model):
     link = db.Column(db.String(150))
     logo_image_file = db.Column(db.String(40),default='default.jpg')
     gym_name = db.Column(db.String(60))
-    #locations
-    #description 
+    gym_description=db.Column(db.String(60))
 
     def __repr__(self):
         return str('Item:' + self.gym_name)

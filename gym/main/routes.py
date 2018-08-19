@@ -51,7 +51,8 @@ def results(search):
             link = result[0]
             name = result[1]
             image = result[2]
-            item = Items(link=link, logo_image_file=image, gym_name=name, search=search_object)
+            description=result[3]
+            item = Items(link=link, logo_image_file=image, gym_name=name, search=search_object, gym_description=description)
             results.append(item)
         db.session.add(search_object)
         db.session.commit()
