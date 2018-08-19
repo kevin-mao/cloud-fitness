@@ -63,12 +63,15 @@ class Search(db.Model):
 #     def __repr__(self):
 #         return str(self.id) + ': ' + str(self.items)
 
+#gyms
 class Items(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
     link = db.Column(db.String(150))
     logo_image_file = db.Column(db.String(40),default='default.jpg')
     gym_name = db.Column(db.String(60))
+    #locations
+    #description 
 
     def __repr__(self):
         return str('Item:' + self.gym_name)

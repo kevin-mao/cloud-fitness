@@ -84,6 +84,7 @@ def gym_name_library(gym_link):
 
         for line in csv_reader:
             if line[0] in gym_link:
+                print(line[0])
                 gym_name=line[1]
                 gym_name = gym_name.replace("\t", "")
                 #For some reason the second column has \t in front of every gym name, so this removes that
