@@ -58,7 +58,12 @@ def results(search):
         db.session.commit()
     else:
         results = check_db.items
-
+    if len(results) == 0: 
+        flash('Did not find any gyms by {}'.format(search), 'danger')
+    elif len(results) == 1:
+        flash('Found {} gym by {}'.format(len(results),search), 'success')
+    else:
+        flash('Found {} gyms by {}'.format(len(results),search), 'success')
     return render_template('results.html', title="Search Results", results=results)
 
 

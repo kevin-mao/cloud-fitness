@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for result in results[:10] %}
-        <article class="media content-section">
-            <h2><img class="rounded-circle article-img" src="{{ url_for('static', filename='gym_pics/' + result.logo_image_file) }}">
-                <a class="article-title" href="{{ result.link}}">{{ result.gym_name }}</a></h2>
-            <p class="article-content" > {{result.gym_description}}</p>
-          
+    {% for result in results %}
+	   <article class="media content-section">
+	   	  <img class="rounded-circle article-img" src="{{ url_for('static', filename='gym_pics/' + result.logo_image_file) }}">
+        	<div class="media-body">
+	            <h2><a class="article-title" href="{{ result.link}}">{{ result.gym_name }}</a></h2>
+	            <p class="article-content" > {{result.gym_description}}</p>
+          	</div>
         </article>
     {% endfor %}
 {% endblock content %}
