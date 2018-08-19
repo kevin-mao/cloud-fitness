@@ -162,13 +162,13 @@ def scrape(location):
     list_of_gym_images=image_finder(list_of_gym_names)
     list_of_gym_descriptions=description(list_of_gym_names)
     
-
+    print(list_of_gym_descriptions)
 
 
     results = []
 
     for i in range(len(list_of_links)):
-        results.append([list_of_links[i], list_of_gym_names[i],list_of_gym_images[i]])
+        results.append([list_of_links[i], list_of_gym_names[i],list_of_gym_images[i], list_of_gym_descriptions[i]])
 
 
     return results
