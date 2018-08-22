@@ -2,9 +2,10 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search, Items, Post
+from gym.models import Search, Gym, Location, Post
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
+from gym.search.maps_scraper import maps_scrape, get_place_details
 
 main = Blueprint('main', __name__)
 
@@ -24,8 +25,8 @@ def home():
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
 
     if form.validate_on_submit():
-        search = form.search.data.lower()
-        return redirect(url_for('main.results', search=search))
+        query = form.search.data.lower()
+        return redirect(url_for('main.results', query=query))
     return render_template('home.html', title='Search', form=form, posts=posts)
 
 @main.route("/about")
@@ -39,31 +40,49 @@ def blog():
     return render_template('blog.html', title='Blog', posts=posts)
 
 
-@main.route("/results/search-<search>", methods=['GET'])
-def results(search):
-    search_object = Search(user_input=search)
-    check_db = Search.query.filter_by(user_input=search).first()
+@main.route("/results/query-<query>", methods=['GET'])
+def results(query):
+    search = Search.query.filter_by(user_input=query).first()
+    if search ==None:
+        search = Search(user_input=query)
+        #json object from using maps api
+        info=maps_scrape(query)
 
-    if check_db==None:
-        info=scrape(search)
-        results=[]
-        for result in info:
-            link = result[0]
-            name = result[1]
-            image = result[2]
-            description=result[3]
-            item = Items(link=link, logo_image_file=image, gym_name=name, search=search_object, gym_description=description)
-            results.append(item)
-        db.session.add(search_object)
-        db.session.commit()
+        if info != 'ZERO_RESULTS':
+            for result in info['results']:
+                place_id = result['place_id']
+                #maps api does not return a home page link, uh oh
+                link='#'
+                #it does have a google maps link tho (specific to each location)
+                maps_link = get_place_details(place_id)['result']['url']
+                name = result['name']
+                address = result['formatted_address']
+                lat = result['geometry']['location']['lat']
+                lng = result['geometry']['location']['lng']
+                #this photo reference can be used in the google places photo api 
+                # to get a posted picture, but it is not their logo
+                #image = result['photo_reference']
+                description=str(result['types'])
+
+                #check to see if this is just another location for a gym or a new gym
+                check_gyms = Gym.query.filter_by(name=name).first()
+                if check_gyms == None:
+                    gym = Gym(link=link, name=name, description=description)
+                    location = Location(place_id=place_id, address=address, link=maps_link,lat=lat, lng=lng, gym=gym)
+                    search.gyms.append(gym)
+                else:
+                    location = Location(place_id=place_id, address=address, link=maps_link, lat=lat, lng=lng, gym=check_gyms)
+                    search.gyms.append(check_gyms)
+            #adds the search_object, then their gym, then their locations
+            db.session.add(search)
+            db.session.commit()
+    gyms = search.gyms
+    if len(gyms) == 0: 
+        flash('Did not find any gyms by {}'.format(search, search.user_input), 'danger')
+    elif len(gyms) == 1:
+        flash('Found {} gym by {}'.format(len(gyms),search.user_input), 'success')
     else:
-        results = check_db.items
-    if len(results) == 0: 
-        flash('Did not find any gyms by {}'.format(search), 'danger')
-    elif len(results) == 1:
-        flash('Found {} gym by {}'.format(len(results),search), 'success')
-    else:
-        flash('Found {} gyms by {}'.format(len(results),search), 'success')
-    return render_template('results.html', title="Search Results", results=results)
+        flash('Found {} gyms by {}'.format(len(gyms),search.user_input), 'success')
+    return render_template('results.html', title="Search Results", search=search)
 
 
