@@ -42,10 +42,12 @@ def blog():
 
 @main.route("/results/query-<query>", methods=['GET'])
 def results(query):
-    search = Search.query.filter_by(user_input=query).first()
-    if search ==None:
+    form = SearchForm()
+    check_searches = Search.query.filter_by(user_input=query).first()
+    if check_searches ==None:
         search = Search(user_input=query)
-        #json object from using maps api
+        db.session.add(search)
+        db.session.flush()
         info=maps_scrape(query)
 
         if info != 'ZERO_RESULTS':
@@ -66,16 +68,25 @@ def results(query):
 
                 #check to see if this is just another location for a gym or a new gym
                 check_gyms = Gym.query.filter_by(name=name).first()
+
+                #if this is a new gym, create the Gym, a Location, and append 
                 if check_gyms == None:
-                    gym = Gym(link=link, name=name, description=description)
-                    location = Location(place_id=place_id, address=address, link=maps_link,lat=lat, lng=lng, gym=gym)
+                    gym = Gym(link=link, name=name, search_id=search.id, description=description)
+                    location = Location(place_id=place_id, search_id=search.id, address=address, link=maps_link,lat=lat, lng=lng)
+                    gym.locations.append(location)
                     search.gyms.append(gym)
+                #if not, gym exists to create and append location
                 else:
-                    location = Location(place_id=place_id, address=address, link=maps_link, lat=lat, lng=lng, gym=check_gyms)
+                    location = Location(place_id=place_id, address=address, search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                    check_gyms.locations.append(location)
                     search.gyms.append(check_gyms)
+
             #adds the search_object, then their gym, then their locations
             db.session.add(search)
             db.session.commit()
+    else:
+        search = check_searches
+
     gyms = search.gyms
     if len(gyms) == 0: 
         flash('Did not find any gyms by {}'.format(search, search.user_input), 'danger')
@@ -83,6 +94,6 @@ def results(query):
         flash('Found {} gym by {}'.format(len(gyms),search.user_input), 'success')
     else:
         flash('Found {} gyms by {}'.format(len(gyms),search.user_input), 'success')
-    return render_template('results.html', title="Search Results", search=search)
+    return render_template('results.html', title="Search Results", form=form, search=search)
 
 

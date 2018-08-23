@@ -66,13 +66,14 @@ class Gym(db.Model):
     logo_image_file = db.Column(db.String(40),default='default.jpg')
     name = db.Column(db.String(60))
     description=db.Column(db.String(60))
-    locations = db.relationship('Location', backref='gym', lazy=True)
+    locations = db.relationship('Location', backref='gym', lazy='subquery')
 
     def __repr__(self):
        return "Gym({})".format(self.name)
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
     gym_id = db.Column(db.Integer, db.ForeignKey('gym.id'))
     #place id is a string used by Google place details api to look for more detailsyyy
     place_id = db.Column(db.String(60))
