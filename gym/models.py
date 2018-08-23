@@ -62,10 +62,9 @@ class Search(db.Model):
 class Gym(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
-    link = db.Column(db.String(150))
-    logo_image_file = db.Column(db.String(40),default='default.jpg')
+    link = db.Column(db.String(300))
     name = db.Column(db.String(60))
-    description=db.Column(db.String(60))
+    description=db.Column(db.String(100))
     locations = db.relationship('Location', backref='gym', lazy='subquery')
 
     def __repr__(self):

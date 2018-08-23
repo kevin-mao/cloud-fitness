@@ -54,23 +54,26 @@ def results(query):
             for result in info['results']:
                 place_id = result['place_id']
                 #maps api does not return a home page link, uh oh
-                link='#'
+
                 #it does have a google maps link tho (specific to each location)
                 maps_link = get_place_details(place_id)['result']['url']
                 name = result['name']
                 address = result['formatted_address']
                 lat = result['geometry']['location']['lat']
                 lng = result['geometry']['location']['lng']
-                #this photo reference can be used in the google places photo api 
+                #this photo reference can be used in the google places photo api
                 # to get a posted picture, but it is not their logo
                 #image = result['photo_reference']
-                description=str(result['types'])
+
 
                 #check to see if this is just another location for a gym or a new gym
                 check_gyms = Gym.query.filter_by(name=name).first()
 
-                #if this is a new gym, create the Gym, a Location, and append 
+                #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
+                    link_and_description = scrape(query, name)
+                    link = link_and_description[0]
+                    description = link_and_description[1]
                     gym = Gym(link=link, name=name, search_id=search.id, description=description)
                     location = Location(place_id=place_id, search_id=search.id, address=address, link=maps_link,lat=lat, lng=lng)
                     gym.locations.append(location)
@@ -88,7 +91,7 @@ def results(query):
         search = check_searches
 
     gyms = search.gyms
-    if len(gyms) == 0: 
+    if len(gyms) == 0:
         flash('Did not find any gyms by {}'.format(search, search.user_input), 'danger')
     elif len(gyms) == 1:
         flash('Found {} gym by {}'.format(len(gyms),search.user_input), 'success')
