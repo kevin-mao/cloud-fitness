@@ -53,8 +53,6 @@ def results(query):
         if info != 'ZERO_RESULTS':
             for result in info['results']:
                 place_id = result['place_id']
-                #maps api does not return a home page link, uh oh
-
                 #it does have a google maps link tho (specific to each location)
                 maps_link = get_place_details(place_id)['result']['url']
                 name = result['name']
@@ -65,21 +63,23 @@ def results(query):
                 # to get a posted picture, but it is not their logo
                 #image = result['photo_reference']
 
+                #get link and description with web scraping 
+                link_and_description = scrape(query, name)
+                link = link_and_description[0]
+                description = link_and_description[1]  
 
                 #check to see if this is just another location for a gym or a new gym
                 check_gyms = Gym.query.filter_by(name=name).first()
-
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-                    link_and_description = scrape(query, name)
-                    link = link_and_description[0]
-                    description = link_and_description[1]
                     gym = Gym(link=link, name=name, search_id=search.id, description=description)
                     location = Location(place_id=place_id, search_id=search.id, address=address, link=maps_link,lat=lat, lng=lng)
                     gym.locations.append(location)
                     search.gyms.append(gym)
                 #if not, gym exists to create and append location
                 else:
+                    check_gyms.link = link
+                    check_gyms.description = description
                     location = Location(place_id=place_id, address=address, search_id=search.id, link=maps_link, lat=lat, lng=lng)
                     check_gyms.locations.append(location)
                     search.gyms.append(check_gyms)
@@ -89,6 +89,18 @@ def results(query):
             db.session.commit()
     else:
         search = check_searches
+        #even though the search has been done before, we still need to update info 
+        for gym in search.gyms:
+            #get name and scrape 
+            name = gym.name
+            link_and_description = scrape(query, name)
+            link = link_and_description[0]
+            description = link_and_description[1]  
+
+            #update 
+            gym.link = link
+            gym.description = description
+            db.session.commit()
 
     gyms = search.gyms
     if len(gyms) == 0:
