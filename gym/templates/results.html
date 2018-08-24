@@ -3,11 +3,11 @@
     {% for gym in search.gyms %}
 		   <article class="media content-section">
 	        	<div class="media-body">
-		            <h2><a class="article-title" href="{{ gym.link}}">{{ gym.name }}</a></h2>
+		            <h2><a class="article-title" href="{{ gym.link}}" target="_blank">{{ gym.name }}</a></h2>
 		            <p class="article-content" > {{gym.description}}</p>
 		            {% for location in gym.locations %}
 		            	{% if location.search_id == search.id %}
-				            <a href="{{location.link}}"> 
+				            <a href="{{location.link}}" target="_blank"> 
 				            	<p class="article-content"> {{ location.address}}</p>
 				            </a>
 			            {% endif%}
