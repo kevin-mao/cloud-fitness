@@ -15,28 +15,43 @@ headers = {
 # will be imported from user's search in future
 
 def query_google_search(location, gym_name):
-    # Because accessing the second page of results from the first is hard, we have two
-    # different functions for them.
-    location.replace(" ", "+")
-    # Replaces any spaces the user types with plus signs so no errors are encountered.
+    gym_link=gym_link_library(gym_name)
 
-    search_url = "https://google.com/search?q=free" + gym_name + "guest+pass+in" + location
-    web_page = requests.get(search_url, headers=headers)
-    # Searches for gym and area
+    if gym_link==None:
 
-    html_soup = BeautifulSoup(web_page.text, 'html.parser')
-    gym_link = html_soup.find('div', {'class': 'rc'})
+        # Because accessing the second page of results from the first is hard, we have two
+        # different functions for them.
+        location.replace(" ", "+")
+        # Replaces any spaces the user types with plus signs so no errors are encountered.
 
-    # Turns the get request into soup and gets the first result
+        search_url = "https://google.com/search?q=free" + gym_name + "guest+pass+in" + location
+        web_page = requests.get(search_url, headers=headers)
+        # Searches for gym and area
 
-    gym_link = gym_link.a['href']
-    gym_link = gym_link.replace("/url?q=", "")
-    # Makes link clickable
+        html_soup = BeautifulSoup(web_page.text, 'html.parser')
+        gym_link = html_soup.find('div', {'class': 'rc'})
+
+        # Turns the get request into soup and gets the first result
+
+        gym_link = gym_link.a['href']
+        gym_link = gym_link.replace("/url?q=", "")
+        # Makes link clickable
 
 
     return gym_link
 
 
+def gym_link_library(gym_name):
+    with open('./gym/search/gym_links.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        # Opens csv file with website names that aren't gyms
+        gym_link=None
+        for line in csv_reader:
+
+            if str(line[0]) in gym_name:
+                gym_link = line[1]
+                gym_link = gym_link.replace("\t", "")
+    return gym_link
 
 
 
