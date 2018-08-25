@@ -39,11 +39,21 @@ def blog():
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('blog.html', title='Blog', posts=posts)
 
+#those weird where the franchise has a different name for each location
+def check_name(name):
+    parts = name.split(" ")
+    if 'Crunch' in parts or 'Equinox' in parts: 
+        name = parts[0]
+    if name == 'LA FITNESS':
+        name = 'LA Fitness'
+    return name 
 
 @main.route("/results/query-<query>", methods=['GET'])
 def results(query):
     form = SearchForm()
     check_searches = Search.query.filter_by(user_input=query).first()
+
+    #if this is a new search 
     if check_searches ==None:
         search = Search(user_input=query)
         db.session.add(search)
@@ -69,22 +79,35 @@ def results(query):
                 description = link_and_description[1]  
 
                 #check to see if this is just another location for a gym or a new gym
-                check_gyms = Gym.query.filter_by(name=name).first()
+                gym_name = check_name(gym_name)
+                check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-                    gym = Gym(link=link, name=name, search_id=search.id, description=description)
-                    location = Location(place_id=place_id, search_id=search.id, address=address, link=maps_link,lat=lat, lng=lng)
-                    gym.locations.append(location)
-                    search.gyms.append(gym)
-                #if not, gym exists to create and append location
+                    gym = Gym(link=link, name=gym_name, search_id=search.id, description=description)
+                    location = Location(place_id=place_id, address=address, search_id=search.id, 
+                        link=maps_link,lat=lat, lng=lng)
+                #if not, gym exists, then check if location exists
                 else:
-                    check_gyms.link = link
-                    check_gyms.description = description
-                    location = Location(place_id=place_id, address=address, search_id=search.id, link=maps_link, lat=lat, lng=lng)
-                    check_gyms.locations.append(location)
-                    search.gyms.append(check_gyms)
+                    gym = check_gyms
+                    check_locations = Location.query.filter_by(address=address).first()
+                    #if new location, create location 
+                    if check_locations == None:
+                        location = Location(place_id=place_id, address=address, 
+                            search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                    #if location exists update its search id, so we know it corresponds to this search. 
+                    else:
+                        location = check_locations
+                        location.search_id = search.id
 
-            #adds the search_object, then their gym, then their locations
+                    #update gym info 
+                    gym.link = link
+                    gym.description = description
+                    gym.search_id = search.id
+
+                gym.locations.append(location)
+                search.gyms.append(gym)
+
+            #store everything in db
             db.session.add(search)
             db.session.commit()
     else:
@@ -92,12 +115,13 @@ def results(query):
         #even though the search has been done before, we still need to update info 
         for gym in search.gyms:
             #get name and scrape 
-            name = gym.name
-            link_and_description = scrape(query, name)
+            gym_name = gym.name
+            link_and_description = scrape(query, gym_name)
             link = link_and_description[0]
             description = link_and_description[1]  
 
             #update 
+            gym.search_id = search.id 
             gym.link = link
             gym.description = description
             db.session.commit()
