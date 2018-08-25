@@ -61,11 +61,11 @@ def description(gym_name):
     with open('./gym/search/descriptions.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with website names that aren't gyms
-        print(gym_name)
+        
         for line in csv_reader:
 
             if str(line[0]) in gym_name:
-                print(line[0])
+
                 gym_description = line[1]
                 gym_description = gym_description.replace("\t", "")
                 return gym_description
