@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search, Gym, Location, Post
+from gym.models import Search, Gym, Info, Location, Post
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
@@ -83,7 +83,8 @@ def results(query):
                 check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-                    gym = Gym(link=link, name=gym_name, search_id=search.id, description=description)
+                    gym = Gym(name=gym_name, search_id=search.id)
+                    info = Info(search_id=search.id, gym_id = gym.id, description=description, link=link)
                     location = Location(place_id=place_id, address=address, search_id=search.id, 
                         link=maps_link,lat=lat, lng=lng)
                 #if not, gym exists, then check if location exists
@@ -103,7 +104,8 @@ def results(query):
                     gym.link = link
                     gym.description = description
                     gym.search_id = search.id
-
+                    
+                gym.info.append(info)
                 gym.locations.append(location)
                 search.gyms.append(gym)
 
@@ -115,15 +117,15 @@ def results(query):
         #even though the search has been done before, we still need to update info 
         for gym in search.gyms:
             #get name and scrape 
-            gym_name = gym.name
-            link_and_description = scrape(query, gym_name)
-            link = link_and_description[0]
-            description = link_and_description[1]  
+            # gym_name = gym.name
+            # link_and_description = scrape(query, gym_name)
+            # link = link_and_description[0]
+            # description = link_and_description[1]  
 
             #update 
             gym.search_id = search.id 
-            gym.link = link
-            gym.description = description
+            # gym.link = link
+            # gym.description = description
             db.session.commit()
 
     gyms = search.gyms
