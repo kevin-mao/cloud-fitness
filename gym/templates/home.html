@@ -46,12 +46,12 @@
         ...
       {% endif %}
     {% endfor %}
- <script type="text/javascript">
-   function activatePlacesSearch(){
-    var input = document.getElementById('search_term');
-    var autocomplete = new google.maps.places.Autocomplete(input);
-  }
- </script>
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&libraries=places&callback=activatePlacesSearch"async defer>
- </script>
+   <script type="text/javascript">
+     function activatePlacesSearch(){
+      var input = document.getElementById('search_term');
+      var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+   </script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&libraries=places&callback=activatePlacesSearch"async defer>
+   </script>
 {% endblock content %}
