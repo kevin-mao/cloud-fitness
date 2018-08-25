@@ -67,11 +67,11 @@ def description(gym_name):
             if str(line[0]) in gym_name:
                 gym_description = line[1]
                 gym_description = gym_description.replace("\t", "")
-                gym_descriptions.append(gym_description)
-            else:
-                gym_descriptions.append('Cool gym!')
 
-    return gym_descriptions
+            else:
+                gym_description='Cool gym!'
+
+    return gym_description
 
 
 def scrape(location, gym_name):
