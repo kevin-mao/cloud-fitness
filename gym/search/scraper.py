@@ -29,16 +29,16 @@ def query_google_search(location, gym_name):
         # Searches for gym and area
 
         html_soup = BeautifulSoup(web_page.text, 'html.parser')
-        gym_link = html_soup.find('div', {'class': 'rc'})
+        gym_links = html_soup.find_all('div', {'class': 'rc'})
 
         # Turns the get request into soup and gets the first result
+        for gym_link in gym_links:
+            gym_link = gym_link.a['href']
+            gym_link = gym_link.replace("/url?q=", "")
+            if blacklist(gym_link)==None:
+                return gym_link
 
-        gym_link = gym_link.a['href']
-        gym_link = gym_link.replace("/url?q=", "")
-        # Makes link clickable
 
-
-    return gym_link
 
 
 def gym_link_library(gym_name):
@@ -75,6 +75,12 @@ def description(gym_name):
 
     return gym_description
 
+def blacklist(link):
+    with open('./gym/search/blacklist.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for line in csv_reader:
+            if str(line[0]) in link:
+                return True
 
 def scrape(location, gym_name):
     gym_link = str(query_google_search(location, gym_name))
