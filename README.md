@@ -33,7 +33,7 @@ git push origin master info_db
 git pull origin master info_db
 ```
 merging branches 
-first check to make sure master is up to date 
+(first check to make sure master is up to date) 
 ```
 git fetch 
 git branch -va 
