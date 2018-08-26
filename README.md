@@ -41,4 +41,3 @@ git branch -va
 git merge info_db
 ```
 
-```
