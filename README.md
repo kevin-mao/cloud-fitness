@@ -25,6 +25,7 @@ git branch
 git checkout info_db
 git checkout master
 
-#push both branches (remember to add and commit)
+#push/pull both branches (remember to add and commit)
 git push origin master info_db
+git pull origin master info_db
 ```

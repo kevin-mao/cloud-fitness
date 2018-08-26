@@ -57,13 +57,13 @@ def results(query):
     if check_searches ==None:
         search = Search(user_input=query)
         db.session.add(search)
-        db.session.flush()
+        db.session.commit()
         info=maps_scrape(query)
 
         if info != 'ZERO_RESULTS':
+            #for each gym that is found 
             for result in info['results']:
                 place_id = result['place_id']
-                #it does have a google maps link tho (specific to each location)
                 maps_link = get_place_details(place_id)['result']['url']
                 gym_name = result['name']
                 address = result['formatted_address']
@@ -83,9 +83,14 @@ def results(query):
                 check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
+<<<<<<< HEAD
                     gym = Gym(link=link, name=gym_name, search_id=search.id, description=description)
+=======
+                    gym = Gym(name=gym_name, search_id=search.id)
+>>>>>>> 8f652bc25d087d542248b1e99d15e4298f8c60df
                     location = Location(place_id=place_id, address=address, search_id=search.id, 
                         link=maps_link,lat=lat, lng=lng)
+                    info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
                 #if not, gym exists, then check if location exists
                 else:
                     gym = check_gyms
@@ -99,11 +104,21 @@ def results(query):
                         location = check_locations
                         location.search_id = search.id
 
+<<<<<<< HEAD
                     #update gym info 
                     gym.link = link
                     gym.description = description
                     gym.search_id = search.id
 
+=======
+                    #check gym info 
+                    for i in gym.info: 
+                        if i.search_id == search.id: 
+                            if i.description != description and i.link != link:
+                                info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                                #only append info if the gym does not have this link and description 
+                                gym.info.append(info)
+>>>>>>> 8f652bc25d087d542248b1e99d15e4298f8c60df
                 gym.locations.append(location)
                 search.gyms.append(gym)
 
