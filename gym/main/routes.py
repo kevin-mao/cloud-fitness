@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search, Gym, Info, Location, Post
+from gym.models import Search, Gym, Location, Post
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
@@ -83,8 +83,7 @@ def results(query):
                 check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-                    gym = Gym(name=gym_name, search_id=search.id)
-                    info = Info(search_id=search.id, gym_id = gym.id, description=description, link=link)
+                    gym = Gym(link=link, name=gym_name, search_id=search.id, description=description)
                     location = Location(place_id=place_id, address=address, search_id=search.id, 
                         link=maps_link,lat=lat, lng=lng)
                 #if not, gym exists, then check if location exists
@@ -104,8 +103,7 @@ def results(query):
                     gym.link = link
                     gym.description = description
                     gym.search_id = search.id
-                    
-                gym.info.append(info)
+
                 gym.locations.append(location)
                 search.gyms.append(gym)
 
