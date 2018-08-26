@@ -73,10 +73,15 @@ def results(query):
                 # to get a posted picture, but it is not their logo
                 #image = result['photo_reference']
 
-                #get link and description with web scraping 
-                link_and_description = scrape(query, gym_name)
-                link = link_and_description[0]
-                description = link_and_description[1]  
+                check_info_db=Info.query.filter_by(search_id=Search.id, gym_id=gym_name).first()
+                if check_info_db==None:
+                    #get link and description with web scraping
+                    link_and_description = scrape(query, gym_name)
+                    link = link_and_description[0]
+                    description = link_and_description[1]
+                else:
+                    link=check_info_db.link
+                    description=check_info_db.description
 
                 #check to see if this is just another location for a gym or a new gym
                 gym_name = check_name(gym_name)
