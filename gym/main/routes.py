@@ -57,7 +57,7 @@ def results(query):
     if check_searches ==None:
         search = Search(user_input=query)
         db.session.add(search)
-        db.session.commit()
+        db.session.flush()
         info=maps_scrape(query)
 
         if info != 'ZERO_RESULTS':
@@ -73,47 +73,59 @@ def results(query):
                 # to get a posted picture, but it is not their logo
                 #image = result['photo_reference']
 
-                check_info_db=Info.query.filter_by(search_id=Search.id, gym_id=gym_name).first()
-                if check_info_db==None:
-                    #get link and description with web scraping
-                    link_and_description = scrape(query, gym_name)
-                    link = link_and_description[0]
-                    description = link_and_description[1]
-                else:
-                    link=check_info_db.link
-                    description=check_info_db.description
-
                 #check to see if this is just another location for a gym or a new gym
                 gym_name = check_name(gym_name)
+                print(gym_name)
                 check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
                     gym = Gym(name=gym_name, search_id=search.id)
                     location = Location(place_id=place_id, address=address, search_id=search.id, 
                         link=maps_link,lat=lat, lng=lng)
-                    info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
-                #if not, gym exists, then check if location exists
+
+                    db.session.add(gym)
+                    db.session.flush()
+                #if not, gym exists so just update it
                 else:
                     gym = check_gyms
+                    gym.search_id = search.id
+                
                     check_locations = Location.query.filter_by(address=address).first()
                     #if new location, create location 
                     if check_locations == None:
                         location = Location(place_id=place_id, address=address, 
-                            search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                            search_id=search.id, link=maps_link, lat=lat, lng=lng)    
                     #if location exists update its search id, so we know it corresponds to this search. 
                     else:
                         location = check_locations
                         location.search_id = search.id
 
-                    #check gym info 
-                    for i in gym.info: 
-                        if i.search_id == search.id: 
-                            if i.description != description and i.link != link:
-                                info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
-                                #only append info if the gym does not have this link and description 
-                                gym.info.append(info)
                 gym.locations.append(location)
                 search.gyms.append(gym)
+
+                link_and_description = scrape(query, gym_name)
+                link = link_and_description[0]
+                description = link_and_description[1]
+
+                #check gym info 
+                if gym.info == []:
+                    info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                    gym.info.append(info)
+
+                #else if it has info, if info is different add a new info
+                else:
+                    links = [i.link for i in gym.info]
+                    print(links)
+                    #if info is new, create new Info object 
+                    #this should prevent duplicate info objects, but idk if it works 
+                    if link not in links:
+                        info2 = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                        gym.info.append(info2)
+                    #if info is right, just update search id 
+                    else:
+                        info = Info.query.filter_by(link=link)   
+                        info.search_id = search.id
+            
 
             #store everything in db
             db.session.add(search)
@@ -122,16 +134,9 @@ def results(query):
         search = check_searches
         #even though the search has been done before, we still need to update info 
         for gym in search.gyms:
-            #get name and scrape 
-            # gym_name = gym.name
-            # link_and_description = scrape(query, gym_name)
-            # link = link_and_description[0]
-            # description = link_and_description[1]  
-
             #update 
-            gym.search_id = search.id 
-            # gym.link = link
-            # gym.description = description
+            gym.search_id = search.id
+            db.session.add(gym) 
             db.session.commit()
 
     gyms = search.gyms

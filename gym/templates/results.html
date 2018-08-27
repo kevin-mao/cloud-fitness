@@ -4,10 +4,10 @@
     	{% if gym.search_id == search.id %}
 		   <article class="media content-section">
 	        	<div class="media-body">
-		            <h2><a class="article-title" href="{{ gym.link}}" target="_blank">{{ gym.name }}</a></h2>
-		            {% for info in gym.info %}
+	        		{% for info in gym.info %}
 		            	{% if info.search_id == search.id %}
-		            	<p class="article-content" > {{gym.description}}</p>
+		           		<h2><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h2>
+		            	<p class="article-content" > {{info.description}}</p>
 		            	{% endif %}
 		            {% endfor %}
 		            {% for location in gym.locations %}
