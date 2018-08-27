@@ -72,30 +72,18 @@ def results(query):
                 #this photo reference can be used in the google places photo api
                 # to get a posted picture, but it is not their logo
                 #image = result['photo_reference']
-
-                check_info_db=Info.query.filter_by(search_id=Search.id, gym_id=gym_name).first()
-                if check_info_db==None:
-                    #get link and description with web scraping
-                    link_and_description = scrape(query, gym_name)
-                    link = link_and_description[0]
-                    description = link_and_description[1]
-                else:
-                    link=check_info_db.link
-                    description=check_info_db.description
-
+                link_and_description = scrape(query, gym_name)
+                link = link_and_description[0]
+                description = link_and_description[1]
+                print(link)
                 #check to see if this is just another location for a gym or a new gym
                 gym_name = check_name(gym_name)
                 check_gyms = Gym.query.filter_by(name=gym_name).first()
                 #if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-<<<<<<< HEAD
                     gym = Gym(link=link, name=gym_name, search_id=search.id, description=description)
-=======
-                    gym = Gym(name=gym_name, search_id=search.id)
->>>>>>> 8f652bc25d087d542248b1e99d15e4298f8c60df
                     location = Location(place_id=place_id, address=address, search_id=search.id, 
                         link=maps_link,lat=lat, lng=lng)
-                    info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
                 #if not, gym exists, then check if location exists
                 else:
                     gym = check_gyms
@@ -108,22 +96,11 @@ def results(query):
                     else:
                         location = check_locations
                         location.search_id = search.id
-
-<<<<<<< HEAD
                     #update gym info 
                     gym.link = link
                     gym.description = description
                     gym.search_id = search.id
 
-=======
-                    #check gym info 
-                    for i in gym.info: 
-                        if i.search_id == search.id: 
-                            if i.description != description and i.link != link:
-                                info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
-                                #only append info if the gym does not have this link and description 
-                                gym.info.append(info)
->>>>>>> 8f652bc25d087d542248b1e99d15e4298f8c60df
                 gym.locations.append(location)
                 search.gyms.append(gym)
 
