@@ -37,6 +37,8 @@ def query_google_search(location, gym_name):
             gym_link = gym_link.replace("/url?q=", "")
             if blacklist(gym_link)==None:
                 return gym_link
+    else:
+        return gym_link
 
 
 
