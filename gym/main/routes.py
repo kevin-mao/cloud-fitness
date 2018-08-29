@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search, Gym, Location, Post
+from gym.models import Search, Gym, Location, Post, Info
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
@@ -127,16 +127,16 @@ def results(query):
 
                 # else if it has info, if info is different add a new info
                 else:
-                    links = [i.link for i in gym.info]
-                    print(links)
+                    #links = [i.link for i in gym.info]
+                    check_info = Info.query.with_parent(gym).filter_by(link=link).first()
                     # if info is new, create new Info object
                     # this should prevent duplicate info objects, but idk if it works
-                    if link not in links:
-                        info2 = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                    if check_info == None:
+                        info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
                         gym.info.append(info2)
                     # if info is right, just update search id
                     else:
-                        info = Info.query.filter_by(link=link)
+                        info = check_info
                         info.search_id = search.id
 
             # store everything in db
