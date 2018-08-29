@@ -1,11 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <div class="form-group">
+            {{ form.search.label(class="form-control-label") }}
+            {% if form.search.errors %}
+                {{ form.search(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.search.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.search(class="form-control form-control-lg", id='search_term') }}
+            {% endif %}
+        </div>
+    </fieldset>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+
     {% for gym in search.gyms %}
     	{% if gym.search_id == search.id %}
 		   <article class="media content-section">
 	        	<div class="media-body">
-		            <h2><a class="article-title" href="{{ gym.link}}" target="_blank">{{ gym.name }}</a></h2>
-		            	<p class="article-content" > {{gym.description}}</p>
+	        		{% for info in gym.info %}
+		            	{% if info.search_id == search.id %}
+		           		<h2><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h2>
+		            	<p class="article-content" > {{info.description}}</p>
+		            	{% endif %}
+		            {% endfor %}
 		            {% for location in gym.locations %}
 		            	{% if location.search_id == search.id %}
 				            <a href="{{location.link}}" target="_blank"> 
@@ -17,4 +42,12 @@
 	        </article>
 	    {% endif %}
     {% endfor %}
+    <script type="text/javascript">
+     function activatePlacesSearch(){
+      var input = document.getElementById('search_term');
+      var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&libraries=places&callback=activatePlacesSearch"async defer>
+	</script>
 {% endblock content %}
