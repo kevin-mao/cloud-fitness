@@ -52,9 +52,14 @@ def check_name(name):
     return name
 
 
-@main.route("/results/query-<query>", methods=['GET'])
+@main.route("/results/query-<query>", methods=['GET', 'POST'])
 def results(query):
     form = SearchForm()
+
+    if form.validate_on_submit():
+        query = form.search.data.lower()
+        return redirect(url_for('main.results', query=query))
+
     check_searches = Search.query.filter_by(user_input=query).first()
 
     # if this is a new search
@@ -144,9 +149,9 @@ def results(query):
 
     gyms = search.gyms
     if len(gyms) == 0:
-        flash('Did not find any gyms by {}'.format(search, search.user_input), 'danger')
+        flash('Did not find any gyms passes!', 'danger')
     elif len(gyms) == 1:
-        flash('Found {} gym by {}'.format(len(gyms), search.user_input), 'success')
+        flash('Found {} passes at these gyms!'.format(len(gyms)), 'success')
     else:
-        flash('Found {} gyms by {}'.format(len(gyms), search.user_input), 'success')
+        flash('Found {} passes at these gyms!'.format(len(gyms)), 'success')
     return render_template('results.html', title="Search Results", form=form, search=search)
