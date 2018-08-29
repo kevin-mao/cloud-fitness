@@ -69,6 +69,16 @@ class Gym(db.Model):
 
     def __repr__(self):
        return "Gym({})".format(self.name)
+       
+class Info(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    gym_id = db.Column(db.Integer, db.ForeignKey('gym.id'))
+    search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
+    link = db.Column(db.String(300))
+    description=db.Column(db.String(100))
+
+    def __repr__(self):
+        return "Info({}:{})".format(self.id, self.gym.name)
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
