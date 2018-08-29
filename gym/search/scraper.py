@@ -36,8 +36,9 @@ def query_google_search(location, gym_name):
             gym_link = gym_link.a['href']
             gym_link = gym_link.replace("/url?q=", "")
             print(gym_link)
-            if blacklist(gym_link)==None:
+            if blacklist(gym_link)==False:
                 return gym_link
+
     else:
         return gym_link
 
@@ -84,7 +85,9 @@ def blacklist(link):
         csv_reader = csv.reader(csv_file)
         for line in csv_reader:
             if str(line[0]) in link:
+                
                 return True
+        return False
 
 def scrape(location, gym_name):
     gym_link = str(query_google_search(location, gym_name))
