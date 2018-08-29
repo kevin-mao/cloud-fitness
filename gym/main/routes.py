@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from gym import db
-from gym.models import Search, Gym, Info, Location, Post
+from gym.models import Search, Gym, Location, Post
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
@@ -108,6 +108,10 @@ def results(query):
                     else:
                         location = check_locations
                         location.search_id = search.id
+                    #update gym info 
+                    gym.link = link
+                    gym.description = description
+                    gym.search_id = search.id
 
                 gym.locations.append(location)
                 search.gyms.append(gym)

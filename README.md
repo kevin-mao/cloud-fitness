@@ -15,3 +15,29 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 ```
+
+## Work in branches
+
+check which branch 
+```
+git branch 
+```
+switch branches
+```
+git checkout info_db
+git checkout master
+```
+push/pull both branches (remember to add and commit)
+```
+git push origin master info_db
+git pull origin master info_db
+```
+merging branches 
+(first check to make sure master is up to date) 
+```
+git fetch 
+git branch -va 
+
+git merge info_db
+```
+
