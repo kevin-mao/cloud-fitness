@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/main/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/search" beforeDir="false" afterPath="$PROJECT_DIR$/search" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/search/scraper.py" beforeDir="false" afterPath="$PROJECT_DIR$/search/scraper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/errors/403.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/errors/403.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/errors/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/errors/404.html" afterDir="false" />
@@ -30,8 +31,8 @@
       <file leaf-file-name="scraper.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/search/scraper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="40" column="12" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
+            <state relative-caret-position="163">
+              <caret line="39" column="82" selection-start-line="39" selection-start-column="82" selection-end-line="39" selection-end-column="82" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -568,8 +569,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/search/scraper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="40" column="12" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
+        <state relative-caret-position="163">
+          <caret line="39" column="82" selection-start-line="39" selection-start-column="82" selection-end-line="39" selection-end-column="82" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>

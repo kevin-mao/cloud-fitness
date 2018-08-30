@@ -36,9 +36,10 @@ def query_google_search(location, gym_name):
             gym_link = gym_link.a['href']
             gym_link = gym_link.replace("/url?q=", "")
             print(gym_link)
+            if "24hrs" in gym_link:
+                return "https://www.24hourfitness.com/membership/free-pass/#step/1"
             if blacklist(gym_link)==False:
                 return gym_link
-
     else:
         return gym_link
 
@@ -85,7 +86,6 @@ def blacklist(link):
         csv_reader = csv.reader(csv_file)
         for line in csv_reader:
             if str(line[0]) in link:
-                
                 return True
         return False
 
