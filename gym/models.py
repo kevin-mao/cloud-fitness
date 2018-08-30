@@ -62,13 +62,22 @@ class Search(db.Model):
 class Gym(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
-    link = db.Column(db.String(300))
     name = db.Column(db.String(60))
-    description=db.Column(db.String(100))
     locations = db.relationship('Location', backref='gym', lazy='subquery')
-
+    info = db.relationship("Info", backref='gym', lazy='subquery')
+    
     def __repr__(self):
        return "Gym({})".format(self.name)
+
+class Info(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    gym_id = db.Column(db.Integer, db.ForeignKey('gym.id'))
+    search_id = db.Column(db.Integer, db.ForeignKey('search.id'))
+    link = db.Column(db.String(300))
+    description=db.Column(db.String(100))
+
+    def __repr__(self):
+        return "Info({}:{})".format(self.id, self.gym.name)
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
