@@ -42,12 +42,45 @@
 	        </article>
 	    {% endif %}
     {% endfor %}
-    <script type="text/javascript">
-     function activatePlacesSearch(){
+<!--     <script type="text/javascript">
+     function initAutocomplete(){
       var input = document.getElementById('search_term');
       var autocomplete = new google.maps.places.Autocomplete(input);
     }
 	</script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&libraries=places&callback=activatePlacesSearch"async defer>
-	</script>
+	</script> -->
+	
+	</div><!-- this closes the column thatt contains results -->
+	<div class="col-sm" id='map' style="height: 500px;">
+	<script>
+	const Http = new XMLHttpRequest();
+	const url='127.0.0.1:5000/data';
+	Http.open("GET", url);
+	Http.send();
+	Http.onreadystatechange=(e)=>{
+	console.log(Http.responseText)
+	}
+
+      function initMap() {
+        var myLatLng = {lat: 40.7, lng: -74};
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: myLatLng
+        });
+
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Hello World!'
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&callback=initMap">
+    </script>
+
+	</div>
+ </div><!-- this closes the row that contains everything-->
 {% endblock content %}
