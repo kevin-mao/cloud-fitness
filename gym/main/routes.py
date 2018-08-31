@@ -27,7 +27,8 @@ def home():
     if form.validate_on_submit():
         query = form.search.data.lower()
         return redirect(url_for('main.results', query=query))
-    return render_template('home.html', title='Search', form=form, posts=posts)
+    return render_template('home.html', form=form, posts=posts)
+
 
 
 @main.route("/about")
