@@ -6,10 +6,11 @@ from gym.models import Search, Gym, Location, Post, Info
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
+from flask_login import login_required
+import json
 
 main = Blueprint('main', __name__)
-
-
+locations_coordinates = {}
 # @main.route("/")
 # @main.route("/home")
 # def home():
@@ -28,8 +29,6 @@ def home():
         query = form.search.data.lower()
         return redirect(url_for('main.results', query=query))
     return render_template('home.html', form=form, posts=posts)
-
-
 
 @main.route("/about")
 def about():
@@ -52,15 +51,14 @@ def check_name(name):
         name = 'LA Fitness'
     return name
 
+@main.route("/coordinates", methods=['GET', 'POST'])
+def send_coordinates():
+    #print(locations_coordinates)
+    return json.dumps({"data": locations_coordinates})
 
 @main.route("/results/query-<query>", methods=['GET', 'POST'])
 def results(query):
-    form = SearchForm()
-
-    if form.validate_on_submit():
-        query = form.search.data.lower()
-        return redirect(url_for('main.results', query=query))
-
+    locations_coordinates.clear()
     check_searches = Search.query.filter_by(user_input=query).first()
 
     # if this is a new search
@@ -85,7 +83,17 @@ def results(query):
 
                 # check to see if this is just another location for a gym or a new gym
                 gym_name = check_name(gym_name)
-                print(gym_name)
+                print(gym_name) 
+
+                #add data to location coordinates api
+                check_coordinates = locations_coordinates.get(gym_name)
+                if check_coordinates == None:
+                    locations_coordinates[gym_name]=[{'coordinates':[lat, lng], 'link': maps_link, 
+                    'address': address}]
+                else:
+                    locations_coordinates[gym_name].append({'coordinates': [lat, lng], 'link': maps_link,
+                        'address': address})
+
                 check_gyms = Gym.query.filter_by(name=gym_name, search_id=search.id).first()
                 # if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
@@ -149,14 +157,30 @@ def results(query):
         for gym in search.gyms:
             # update
             gym.search_id = search.id
+            for location in gym.locations:
+                if location.search_id == search.id: 
+                    check_coordinates = locations_coordinates.get(gym.name)
+                    if check_coordinates == None:
+                        locations_coordinates[gym.name]=[{'coordinates':[location.lat, location.lng], 
+                        'link': location.link,'address': location.address}]
+                    else:
+                        locations_coordinates[gym.name].append({'coordinates':[location.lat, location.lng], 
+                            'link': location.link,'address': location.address})
+
             db.session.add(gym)
             db.session.commit()
-
     gyms = search.gyms
+
     if len(gyms) == 0:
         flash('Did not find any gyms passes!', 'danger')
     elif len(gyms) == 1:
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
+<<<<<<< HEAD
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
     return render_template('results.html', title="Search Results", form=form, search=search)
+=======
+        flash('Found {} passes at these gyms!'.format(len(gyms)), 'success')
+
+    return render_template('results.html', title="Search Results", search=search)
+>>>>>>> 6d43f15c46ed5f42a3ff2214a2dd69808286af52

@@ -45,7 +45,7 @@
     </header>
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -56,20 +56,19 @@
             {% endif %}
           {% endwith %}
           {% block content %}{% endblock %}
-        </div>
-        <div class="col-md-3">
+ <!--        <div class="col-md-3">
           <div class="content-section">
             <h3> Sick advertisements </h3>
-            <!-- <p class='text-muted'>  -->
+            <p class='text-muted'> 
               <ul class="list-group">
-<!--                 <li class="list-group-item list-group-item-light">Latest Posts</li>
+                <li class="list-group-item list-group-item-light">Latest Posts</li>
                 <li class="list-group-item list-group-item-light">Announcements</li>
                 <li class="list-group-item list-group-item-light">Calendars</li>
-                <li class="list-group-item list-group-item-light">etc</li> -->
+                <li class="list-group-item list-group-item-light">etc</li>
               </ul>
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
     </main>
 

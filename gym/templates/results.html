@@ -1,26 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-<form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <fieldset class="form-group">
-        <div class="form-group">
-            {{ form.search.label(class="form-control-label") }}
-            {% if form.search.errors %}
-                {{ form.search(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.search.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.search(class="form-control form-control-lg", id='search_term') }}
-            {% endif %}
-        </div>
-    </fieldset>
-    <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
-    </div>
 
+    <form class='form-group' action='{{url_for('main.home')}}'>
+         <button class="btn btn-outline-info" >
+        	Search again
+        </button>   	
+    </form>
     {% for gym in search.gyms %}
     	{% if gym.search_id == search.id %}
 		   <article class="media content-section">
@@ -43,11 +28,62 @@
 	    {% endif %}
     {% endfor %}
     <script type="text/javascript">
-     function activatePlacesSearch(){
-      var input = document.getElementById('search_term');
-      var autocomplete = new google.maps.places.Autocomplete(input);
-    }
-	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&libraries=places&callback=activatePlacesSearch"async defer>
-	</script>
+
+	function initMap() {
+		
+    	const Http = new XMLHttpRequest();
+		const url=SCRIPT_ROOT + '/coordinates';
+		Http.open("GET", url);
+		Http.send();
+		Http.onreadystatechange=(e)=>{
+			var data = JSON.parse(Http.responseText).data;
+
+			//this loop just defines the lat,lng for the map 
+			//edit api to pass search coordinates 	
+			var gym;
+			for (gym in data){
+				var LatLng = {'lat': data[gym][0]['coordinates'][0], 'lng': data[gym][0]['coordinates'][1]};
+			}
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 11,
+				center: LatLng
+			});
+
+			//this loop adds markers 
+			for (gym in data){
+				for(i=0; i < data[gym].length; i++){
+					var LatLng = {'lat': data[gym][i]['coordinates'][0], 'lng': data[gym][i]['coordinates'][1]};
+
+					var contentString = '<div><h2>'+ gym.toString() + '</h3> <p> This is a great gym! </p>'+
+					'<p>'+ data[gym][i]['address'].toString() + '</p> <a href='+ data[gym][i]['link'].toString() +'> Open in maps </a></div>';
+					var infowindow = new google.maps.InfoWindow({
+			          content: contentString
+			        });
+					var marker = new google.maps.Marker({
+						position: LatLng,
+						map: map,
+						title: 'Gym'
+					});
+					marker.addListener('click', function() {
+			          infowindow.open(map, marker);
+			        });
+				
+				}
+			}	
+		}
+
+	}
+    </script>
+	
+	</div><!-- this closes the column thatt contains results -->
+	<div class="col-sm" id='map' style="height: 500px;">
+    <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&callback=initMap">
+    </script>
+    
+
+	</div>
+ </div><!-- this closes the row that contains everything-->
 {% endblock content %}
