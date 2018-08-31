@@ -155,7 +155,7 @@ def results(query):
     if len(gyms) == 0:
         flash('Did not find any gyms passes!', 'danger')
     elif len(gyms) == 1:
-        flash('Found {} passes at these gyms!'.format(len(gyms)), 'success')
+        flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
-        flash('Found {} passes at these gyms!'.format(len(gyms)), 'success')
+        flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
     return render_template('results.html', title="Search Results", form=form, search=search)
