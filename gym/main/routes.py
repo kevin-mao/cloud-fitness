@@ -45,10 +45,12 @@ def blog():
 # those weird where the franchise has a different name for each location
 def check_name(name):
     parts = name.split(" ")
-    if 'Crunch' in parts or 'Equinox' in parts:
-        name = parts[0]
+    if 'Crunch' in parts or 'Equinox' in parts or 'Intoxx' in parts:
+        name = parts[0] + ' Fitness'
     if name == 'LA FITNESS':
         name = 'LA Fitness'
+    if 'Jewish Community Center' in name or 'JCC' in name:
+        name = 'Jewish Community Center'
     return name
 
 @main.route("/coordinates", methods=['GET', 'POST'])
@@ -63,10 +65,12 @@ def results(query):
 
     # if this is a new search
     if check_searches == None:
-        search = Search(user_input=query)
+        #center lat,lng are the coordinates of the gym 
+        center_lat, center_lng, info = maps_scrape(query)
+
+        search = Search(user_input=query,lat=center_lat, lng=center_lng)
         db.session.add(search)
         db.session.flush()
-        info = maps_scrape(query)
 
         if info != 'ZERO_RESULTS':
             # for each gym that is found
@@ -86,13 +90,13 @@ def results(query):
                 print(gym_name) 
 
                 #add data to location coordinates api
-                check_coordinates = locations_coordinates.get(gym_name)
-                if check_coordinates == None:
-                    locations_coordinates[gym_name]=[{'coordinates':[lat, lng], 'link': maps_link, 
+                if locations_coordinates == {}:
+                    locations_coordinates['center'] = [center_lat, center_lng]
+                    locations_coordinates['gyms']=[{'name': gym_name, 'coordinates':[lat, lng], 'link': maps_link, 
                     'address': address}]
                 else:
-                    locations_coordinates[gym_name].append({'coordinates': [lat, lng], 'link': maps_link,
-                        'address': address})
+                    locations_coordinates['gyms'].append({'name': gym_name, 'coordinates':[lat, lng], 
+                        'link': maps_link, 'address': address})
 
                 check_gyms = Gym.query.filter_by(name=gym_name, search_id=search.id).first()
                 # if this is a new gym, create the Gym, a Location, and append
@@ -100,7 +104,6 @@ def results(query):
                     gym = Gym(name=gym_name, search_id=search.id)
                     location = Location(place_id=place_id, address=address, search_id=search.id,
                                         link=maps_link, lat=lat, lng=lng)
-
                     db.session.add(gym)
                     db.session.flush()
                 # if not, gym exists so just update it
@@ -153,19 +156,22 @@ def results(query):
             db.session.commit()
     else:
         search = check_searches
+        center_lat = search.lat
+        center_lng = search.lng
         # even though the search has been done before, we still need to update info
         for gym in search.gyms:
             # update
             gym.search_id = search.id
             for location in gym.locations:
                 if location.search_id == search.id: 
-                    check_coordinates = locations_coordinates.get(gym.name)
-                    if check_coordinates == None:
-                        locations_coordinates[gym.name]=[{'coordinates':[location.lat, location.lng], 
-                        'link': location.link,'address': location.address}]
+                    if locations_coordinates == {}:
+                        locations_coordinates['center'] = [center_lat, center_lng]
+                        locations_coordinates['gyms']=[{'name': gym.name, 'coordinates':[location.lat, location.lng], 
+                        'link': location.link, 'address': location.address}]
                     else:
-                        locations_coordinates[gym.name].append({'coordinates':[location.lat, location.lng], 
-                            'link': location.link,'address': location.address})
+                        locations_coordinates['gyms'].append({'name': gym.name, 
+                            'coordinates':[location.lat, location.lng], 'link': location.link, 
+                            'address': location.address})
 
             db.session.add(gym)
             db.session.commit()

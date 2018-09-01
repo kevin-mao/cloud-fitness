@@ -34,7 +34,7 @@ def maps_scrape(location):
 	lat,lng, name = find_place(location)
 	if (lat, lng, name) != (0,0,0):
 		results = text_search(lat,lng,name)
-		return results
+		return lat, lng, results
 	else:
 		return 'ZERO_RESULTS'
 

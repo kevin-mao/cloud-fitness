@@ -56,6 +56,9 @@ class Search(db.Model):
     user_input= db.Column(db.String(100), nullable=False)
     gyms = db.relationship("Gym", secondary=search_gym, lazy='subquery',
         backref=db.backref('searches', lazy=True))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+
     def __repr__(self):
         return "Search({})".format(self.user_input)
 
