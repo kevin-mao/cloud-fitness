@@ -22,8 +22,8 @@ def find_place(location):
 def text_search(lat,lng, name):
 	radius=10000
 	typ='gym'
-	request_base='https://maps.googleapis.com/maps/api/place/textsearch/json?query=free%20guest%20pass%20gyms%20in%20'
-	request = request_base + '{}&type={}&location={},{}&radius={}&key={}'.format(name,typ,lat, lng,radius,API_KEY)
+	request_base='https://maps.googleapis.com/maps/api/place/textsearch/json?query=free%20guest%20pass%20gyms%20%20'
+	request = request_base + '&type={}&location={},{}&radius={}&key={}'.format(typ,lat, lng,radius,API_KEY)
 	r = requests.get(request).json()
 	return r
 

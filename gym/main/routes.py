@@ -121,9 +121,6 @@ def results(query):
                         location = check_locations
                         location.search_id = search.id
                     #update gym info 
-                    gym.link = link
-                    gym.description = description
-                    gym.search_id = search.id
 
                 gym.locations.append(location)
                 search.gyms.append(gym)
