@@ -16,13 +16,16 @@
 		            	<p class="article-content" > {{info.description}}</p>
 		            	{% endif %}
 		            {% endfor %}
-		            {% for location in gym.locations %}
-		            	{% if location.search_id == search.id %}
-				            <a href="{{location.link}}" target="_blank"> 
-				            	<p class="article-content"> {{ location.address}}</p>
-				            </a>
-			            {% endif%}
-			        {% endfor%}
+		            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{gym.name}}'); toggleFocus('{{gym.name}}'); return false;">All locations</a>
+		         	<div class='locations' id='sectiontohide {{gym.name}}' style="display: none;">		         	
+			            {% for location in gym.locations %}
+			            	{% if location.search_id == search.id %}
+					            <a href="{{location.link}}" target="_blank" class="article-content"> 
+					            	 {{ location.address}}
+					            </a>
+				            {% endif%}
+				        {% endfor%}
+			    	</div>
 	          	</div>
 	        </article>
 	    {% endif %}
@@ -33,7 +36,7 @@
 	</div>
  </div><!-- this closes the row that contains everything-->
     <script type="text/javascript">
-
+   	var markers = Object.create(null);;
 	function initMap() {
 		
     	const Http = new XMLHttpRequest();
@@ -45,9 +48,10 @@
 			//get search coordinates 
 			var center = {'lat': data.center[0], 'lng': data.center[1]};
 			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 11,
+				zoom: 12,
 				center: center
 			});
+			google.maps.event.trigger(map, 'resize');
 
 			var yourLocation = new google.maps.Marker({
 				position: center,
@@ -71,17 +75,76 @@
 					title: gym_info['name'] + ' location'
 				});
 				marker.infowindow = infowindow;
-
 				marker.addListener('click', function() {
 					return this.infowindow.open(map, this);
 				});
-			
+
+				if (markers[gym_info['name']] == null){
+					markers[gym_info['name']] = [marker];
+				}
+				else {
+					markers[gym_info['name']].push(marker);
+				}
 			}
 				
 
 		}
 
 	}
+	//hide location addresses 
+
+    function toggleHidden(id) {
+
+       var divelement = document.getElementById(id);
+
+       if(divelement.style.display == 'none')
+          divelement.style.display = 'block';
+       else
+          divelement.style.display = 'none';
+    }
+
+    function toggleFocus(gym_name){
+    	hidden_section = document.getElementById('sectiontohide '+gym_name)
+    	//if the toggle reealed the locations 
+    	if (hidden_section.style.display == 'block'){
+	    	for (gym in markers){ 
+	    		//if this is the selected gym 
+	    		if (gym_name == gym) {
+	    			gym_markers = markers[gym]
+	    			for (i=0; i < gym_markers.length;i++) {
+	    				marker = gym_markers[i];
+						marker.setOpacity(1);
+	    			} 
+	    		}
+	    		//fade out all other gyms 
+	    		else {
+	    			gym_markers = markers[gym]
+	    			for (i=0; i < gym_markers.length;i++) {
+	    				marker = gym_markers[i];
+						marker.setOpacity(0.6);
+						
+	    			} 
+	    		}
+	    		
+	    	}
+	    }
+	    else{
+	    	for (gym in markers){ 
+	    		//set to normal every other marker
+	    		if (gym_name != gym) {
+	    			gym_markers = markers[gym]
+	    			for (i=0; i < gym_markers.length;i++) {
+	    				marker = gym_markers[i];
+						marker.setOpacity(1);
+	    			} 
+	    		}
+	    		
+	    	}	    	
+	    }
+    }
+
+
+
     </script>
 
      <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>

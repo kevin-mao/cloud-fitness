@@ -35,7 +35,6 @@ def query_google_search(location, gym_name):
         for gym_link in gym_links:
             gym_link = gym_link.a['href']
             gym_link = gym_link.replace("/url?q=", "")
-            print(gym_link)
             if "24hrs" in gym_link:
                 return "https://www.24hourfitness.com/membership/free-pass/#step/1"
             if blacklist(gym_link)==False:

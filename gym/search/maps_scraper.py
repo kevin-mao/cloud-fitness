@@ -20,9 +20,9 @@ def find_place(location):
 
 #gets the json file containing address, location, name, opening_now, place_id, etc.
 def text_search(lat,lng, name):
-	radius=10000
+	radius=6000
 	typ='gym'
-	request_base='https://maps.googleapis.com/maps/api/place/textsearch/json?query=free%20guest%20pass%20gyms%20%20'
+	request_base='https://maps.googleapis.com/maps/api/place/textsearch/json?query=free%20guest%20pass%20gyms%20'
 	request = request_base + '&type={}&location={},{}&radius={}&key={}'.format(typ,lat, lng,radius,API_KEY)
 	r = requests.get(request).json()
 	return r
@@ -36,7 +36,7 @@ def maps_scrape(location):
 		results = text_search(lat,lng,name)
 		return lat, lng, results
 	else:
-		return 'ZERO_RESULTS'
+		return 0,0,0
 
 #uses details api to get a place's details given a place id
 def get_place_details(place_id):

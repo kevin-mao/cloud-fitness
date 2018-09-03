@@ -25,9 +25,10 @@ def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         query = form.search.data.lower()
-        return redirect(url_for('main.results', query=query))
+        range = form.range.data
+        return redirect(url_for('main.search', query=query))
     return render_template('home.html', form=form, posts=posts)
 
 @main.route("/about")
@@ -45,7 +46,7 @@ def blog():
 # those weird where the franchise has a different name for each location
 def check_name(name):
     parts = name.split(" ")
-    if 'Crunch' in parts or 'Equinox' in parts or 'Intoxx' in parts:
+    if 'Crunch' in parts or 'Equinox' in parts or 'Intoxx' in parts or 'GoodLife' in parts:
         name = parts[0] + ' Fitness'
     if name == 'LA FITNESS':
         name = 'LA Fitness'
@@ -58,8 +59,8 @@ def send_coordinates():
     #print(locations_coordinates)
     return json.dumps({"data": locations_coordinates})
 
-@main.route("/results/query-<query>", methods=['GET', 'POST'])
-def results(query):
+@main.route("/search/<query>", methods=['GET', 'POST'])
+def search(query):
     locations_coordinates.clear()
     check_searches = Search.query.filter_by(user_input=query).first()
 
@@ -72,7 +73,7 @@ def results(query):
         db.session.add(search)
         db.session.flush()
 
-        if info != 'ZERO_RESULTS':
+        if info != 0:
             # for each gym that is found
             for result in info['results']:
                 place_id = result['place_id']
@@ -128,7 +129,7 @@ def results(query):
                 link_and_description = scrape(query, gym_name)
                 link = link_and_description[0]
                 description = link_and_description[1]
-
+                print(link)
                 # check gym info
                 if gym.info == []:
                     info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
