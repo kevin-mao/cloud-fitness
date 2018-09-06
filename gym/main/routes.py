@@ -10,18 +10,18 @@ from flask_login import login_required
 import json
 import csv
 
-def abbreviation_fixer(query):
-    with open('./gym/main/state_names.csv', 'r') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        # Opens csv file with list of state names and abbreviations
-        for line in csv_reader:
-            abbreviation = " "+ line[1].lower() + ","
-            if abbreviation in query:
-                state_name=" "+line[0]+","
-                # if the state abbreviation is in the search, replace with with the full name
-                query = query.replace(abbreviation, state_name).lower()
-                print(query)
-                return query
+# def abbreviation_fixer(query):
+#     with open('./gym/main/state_names.csv', 'r') as csv_file:
+#         csv_reader = csv.reader(csv_file)
+#         # Opens csv file with list of state names and abbreviations
+#         for line in csv_reader:
+#             abbreviation = " "+ line[1].lower() + ","
+#             if abbreviation in query:
+#                 state_name=" "+line[0]+","
+#                 # if the state abbreviation is in the search, replace with with the full name
+#                 query = query.replace(abbreviation, state_name).lower()
+#                 print(query)
+#                 return query
 
 def data_scraper():
     with open('./gym/main/cities_list.csv', 'r') as csv_file:
@@ -173,7 +173,7 @@ def send_coordinates():
 
 @main.route("/search/<query>", methods=['GET', 'POST'])
 def search(query):
-    query=abbreviation_fixer(query)
+    # query=abbreviation_fixer(query)
     locations_coordinates.clear()
     check_searches = Search.query.filter_by(user_input=query).first()
 
