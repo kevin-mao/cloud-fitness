@@ -8,6 +8,105 @@ from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
 from flask_login import login_required
 import json
+import csv
+
+def data_scraper():
+    with open('./gym/main/cities_list.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        # Opens csv file with website names that aren't gyms
+        for line in csv_reader:
+            place=line[1]+", "+line[2]+", USA"
+            place=place.lower()
+            print(place)
+            # center lat,lng are the coordinates of the gym
+            center_lat, center_lng, info = maps_scrape(place)
+
+            search = Search(user_input=place, lat=center_lat, lng=center_lng)
+            db.session.add(search)
+            db.session.flush()
+
+            if info != 0:
+                # for each gym that is found
+                for result in info['results']:
+                    place_id = result['place_id']
+                    maps_link = get_place_details(place_id)['result']['url']
+                    gym_name = result['name']
+                    address = result['formatted_address']
+                    lat = result['geometry']['location']['lat']
+                    lng = result['geometry']['location']['lng']
+                    # this photo reference can be used in the google places photo api
+                    # to get a posted picture, but it is not their logo
+                    # image = result['photo_reference']
+
+                    # check to see if this is just another location for a gym or a new gym
+                    gym_name = check_name(gym_name)
+                    print(gym_name)
+
+                    # add data to location coordinates api
+                    if locations_coordinates == {}:
+                        locations_coordinates['center'] = [center_lat, center_lng]
+                        locations_coordinates['gyms'] = [
+                            {'name': gym_name, 'coordinates': [lat, lng], 'link': maps_link,
+                             'address': address}]
+                    else:
+                        locations_coordinates['gyms'].append({'name': gym_name, 'coordinates': [lat, lng],
+                                                              'link': maps_link, 'address': address})
+
+                    check_gyms = Gym.query.filter_by(name=gym_name, search_id=search.id).first()
+                    # if this is a new gym, create the Gym, a Location, and append
+                    if check_gyms == None:
+                        gym = Gym(name=gym_name, search_id=search.id)
+                        location = Location(place_id=place_id, address=address, search_id=search.id,
+                                            link=maps_link, lat=lat, lng=lng)
+                        db.session.add(gym)
+                        db.session.flush()
+                    # if not, gym exists so just update it
+                    else:
+                        gym = check_gyms
+                        gym.search_id = search.id
+
+                        check_locations = Location.query.filter_by(address=address).first()
+                        # if new location, create location
+                        if check_locations == None:
+                            location = Location(place_id=place_id, address=address,
+                                                search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                            # if location exists update its search id, so we know it corresponds to this search.
+                        else:
+                            location = check_locations
+                            location.search_id = search.id
+                        # update gym info
+
+                    gym.locations.append(location)
+                    search.gyms.append(gym)
+
+                    link_and_description = scrape(place, gym_name)
+                    link = link_and_description[0]
+                    description = link_and_description[1]
+                    print(link)
+                    # check gym info
+                    if gym.info == []:
+                        info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                        gym.info.append(info)
+
+                    # else if it has info, if info is different add a new info
+                    else:
+                        # links = [i.link for i in gym.info]
+                        check_info = Info.query.with_parent(gym).filter_by(link=link).first()
+                        # if info is new, create new Info object
+                        # this should prevent duplicate info objects, but idk if it works
+                        if check_info == None:
+                            info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                            gym.info.append(info2)
+                        # if info is right, just update search id
+                        else:
+                            info = check_info
+                            info.search_id = search.id
+
+                # store everything in db
+                db.session.add(search)
+                db.session.commit()
+
+
 
 main = Blueprint('main', __name__)
 locations_coordinates = {}
@@ -174,7 +273,7 @@ def search(query):
             db.session.add(gym)
             db.session.commit()
     gyms = search.gyms
-
+    #data_scraper()
     if len(gyms) == 0:
         flash('Did not find any gyms passes!', 'danger')
     elif len(gyms) == 1:
