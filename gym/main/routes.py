@@ -15,11 +15,12 @@ def abbreviation_fixer(query):
         csv_reader = csv.reader(csv_file)
         # Opens csv file with list of state names and abbreviations
         for line in csv_reader:
-            abbreviation = line[1].lower() + ","
+            abbreviation = " "+ line[1].lower() + ","
             if abbreviation in query:
-                state_name=line[0]+","
+                state_name=" "+line[0]+","
                 # if the state abbreviation is in the search, replace with with the full name
                 query = query.replace(abbreviation, state_name).lower()
+                print(query)
                 return query
 
 def data_scraper():
