@@ -1,8 +1,7 @@
 import requests 
 
 #top secret api key
-API_KEY = 'AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ'
-
+API_KEY = 'AIzaSyDyO9pLTG9FgWTCWkAywL13RGz93um2dqY
 #get coordinates of the location inputted so that we can accurately search for 
 #gyms in a 10,000m radius around there 
 def find_place(location):
