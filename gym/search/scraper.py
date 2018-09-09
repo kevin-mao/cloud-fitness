@@ -46,7 +46,7 @@ def query_google_search(location, gym_name):
 
 
 def gym_link_library(gym_name):
-    with open('./gym/search/gym_links.csv', 'r') as csv_file:
+    with open('./gym/static/csv/gym_links.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with website names that aren't gyms
         gym_link=None
@@ -61,7 +61,7 @@ def gym_link_library(gym_name):
 
 def description(gym_name):
     gym_descriptions = []
-    with open('./gym/search/descriptions.csv', 'r') as csv_file:
+    with open('./gym/static/csv/descriptions.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with website names that aren't gyms
         
@@ -79,7 +79,7 @@ def description(gym_name):
     return gym_description
 
 def blacklist(link):
-    with open('./gym/search/blacklist.csv', 'r') as csv_file:
+    with open('./gym/static/csv/blacklist.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         for line in csv_reader:
             if str(line[0]) in link:

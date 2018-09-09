@@ -30,14 +30,16 @@ def text_search(lat,lng, name):
 # those weird where the franchise has a different name for each location
 def check_name(name):
     parts = name.split(" ")
-    bad_names = ['Crunch', 'Equinox', 'Intoxx', 'GoodLife', 'Planet', 'Anytime', 'Blink']
+    bad_names = ['Crunch', 'Equinox', 'Intoxx', 'GoodLife', 'Planet', 'Anytime', 'Blink', 'BodyScapes']
     for bn in bad_names: 
         if bn in parts:
             name = parts[0] + ' Fitness'
-        if '24' in parts: 
-            name = parts[0] + ' Hour Fitness'
-        if 'YMCA' in parts:
-            name = "YMCA"
+    if '24' in parts: 
+        name = parts[0] + ' Hour Fitness'
+    if 'YMCA' in parts:
+        name = "YMCA"
+    if 'Powerhouse' in name: 
+        name = 'Powerhouse Gym'
     if name == 'LA FITNESS':
         name = 'LA Fitness'
     if 'Jewish Community Center' in name or 'JCC' in name:

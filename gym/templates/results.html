@@ -7,37 +7,39 @@
         </button>   	
     </form>
     {% for gym in search.gyms %}
-    	{% if gym.search_id == search.id %}
-		   <article class="media content-section">
-	        	<div class="media-body">
-	        		<div class="row">
-	     
-	        		<div class="col-md-4">
-	        		{% for info in gym.info %}
-		            	{% if info.search_id == search.id %}
-			           		<h4><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h4>
-			        </div>
+    	{{gym.name}}
+    	{{gym.search_id}}
+	   <article class="media content-section">
+        	<div class="media-body">
+        		<div class="row">
+     
+        		<div class="col-md-4">
+        		{% for info in gym.info %}
+        		 	{{info.search_id}}
+	            	{% if info.search_id == search.id %}
+		           		<h4><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h4>
+        		 }
+		        </div>
 
-					<div class="col-md-8">	
-			            	<p class="article-content" > {{info.description}}</p>
-		            	{% endif %}
-		            {% endfor %}	           
-			            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{gym.name}}'); toggleFocus('{{gym.name}}'); return false;">All locations</a>
-			         	<div class='locations' id='sectiontohide {{gym.name}}' style="display: none;">		         	
-				            {% for location in gym.locations %}
-				            	{% if location.search_id == search.id %}
-						            <a href="{{location.link}}" target="_blank" class="article-content"> 
-						            	 {{ location.address}}
-						            </a>
-					            {% endif%}
-					        {% endfor%}
-				    	</div>
-				    </div>
+				<div class="col-md-8">	
+		            	<p class="article-content" > {{info.description}}</p>
+	            	{% endif %}
+	            {% endfor %}	           
+		            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{gym.name}}'); toggleFocus('{{gym.name}}'); return false;">All locations</a>
+		         	<div class='locations' id='sectiontohide {{gym.name}}' style="display: none;">		         	
+			            {% for location in gym.locations %}
+			            	{% if location.search_id == search.id %}
+					            <a href="{{location.link}}" target="_blank" class="article-content"> 
+					            	 {{ location.address}}
+					            </a>
+				            {% endif%}
+				        {% endfor%}
+			    	</div>
+			    </div>
 
-				    </div> 
-	          	</div>
-	        </article>
-	    {% endif %}
+			    </div> 
+          	</div>
+        </article>
     {% endfor %}
 	
 	</div><!-- this closes the column thatt contains results -->
@@ -158,6 +160,6 @@
 
      <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxq6oC2dG2L7oHlKG2jaBeYUMjye8fzDQ&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyO9pLTG9FgWTCWkAywL13RGz93um2dqY&callback=initMap">
     </script>
 {% endblock content %}
