@@ -1,1 +1,1 @@
-web: gunicorn gym
+web gunicorn manage:run 
