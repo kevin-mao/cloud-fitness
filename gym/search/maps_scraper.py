@@ -73,7 +73,7 @@ def maps_scrape(location):
 #the way we scraped cities, we used full state name not abbreviated states 
 #used to fix autocomplete cities 
 def abbreviation_fixer(query):
-    with open('./gym/main/state_names.csv', 'r') as csv_file:
+    with open('./gym/static/csv/state_names.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with list of state names and abbreviations
         for line in csv_reader:

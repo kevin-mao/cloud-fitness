@@ -160,6 +160,7 @@ def search(query):
 
 
 @main.route("/scrape", methods=['GET', 'POST'])
+@login_required
 def pre_scrape():
     #used for pre-scraping to set up db 
     with open('./gym/static/csv/cities_list.csv', 'r') as csv_file:
