@@ -155,6 +155,6 @@
 
      <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyO9pLTG9FgWTCWkAywL13RGz93um2dqY&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
     </script>
 {% endblock content %}

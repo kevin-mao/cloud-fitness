@@ -2,7 +2,14 @@ import requests
 import csv 
 
 #top secret api key
-API_KEY = 'AIzaSyDyO9pLTG9FgWTCWkAywL13RGz93um2dqY'
+def get_key():
+    with open('./gym/static/csv/key.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for line in csv_reader:
+            key=line[0]
+            print(key)
+        return key
+API_KEY = get_key()
 
 #get coordinates of the location inputted so that we can accurately search for 
 def find_place(location):

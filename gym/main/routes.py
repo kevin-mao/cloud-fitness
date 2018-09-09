@@ -10,6 +10,13 @@ from flask_login import login_required
 import json
 import csv
 
+def get_key():
+    with open('./gym/static/csv/key.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for line in csv_reader:
+            key=line[0]
+        return key
+API_KEY = get_key()
 
 main = Blueprint('main', __name__)
 locations_coordinates = {}
@@ -25,7 +32,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts)
+    return render_template('home.html', form=form, posts=posts, key=API_KEY)
 
 @main.route("/about")
 def about():
@@ -156,7 +163,8 @@ def search(query):
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
-    return render_template('results.html', title="Search Results", search=search)
+    return render_template('results.html', title="Search Results", search=search, key=API_KEY
+)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])
