@@ -163,7 +163,7 @@ def search(query):
 @login_required
 def pre_scrape():
     #used for pre-scraping to set up db 
-    with open('./gym/static/csv/cities_list.csv', 'r') as csv_file:
+    with open('./gym/static/csv/short_cities_list.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         # Opens csv file with names of cities
         for line in csv_reader:
@@ -219,7 +219,7 @@ def pre_scrape():
                         link_and_description = scrape(place, gym_name)
                         link = link_and_description[0]
                         description = link_and_description[1]
-
+                        print(link)
                         # check gym info
                         if gym.info == []:
                             info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)

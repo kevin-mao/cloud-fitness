@@ -10,11 +10,10 @@
 	   <article class="media content-section">
         	<div class="media-body">
         		<div class="row">
-     
         		<div class="col-md-4">
         		{% for info in gym.info %}
 	            	{% if info.search_id == search.id %}
-		           	<h4><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h4>
+		           		<h4><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h4>
 		        </div>
 
 				<div class="col-md-8">	
