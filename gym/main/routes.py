@@ -7,6 +7,8 @@ from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details
 from flask_login import login_required
+from flask_pymongo import PyMongo
+from gym import mongo
 import json
 import csv
 
@@ -123,12 +125,6 @@ def data_scraper():
 
 main = Blueprint('main', __name__)
 locations_coordinates = {}
-# @main.route("/")
-# @main.route("/home")
-# def home():
-#     page = request.args.get('page', 1, type=int)
-#     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-#     return render_template('home.html', posts=posts)
 
 @main.route("/", methods=['GET', 'POST'])
 @main.route("/home", methods=['GET', 'POST'])
@@ -174,8 +170,9 @@ def send_coordinates():
 @main.route("/search/<query>", methods=['GET', 'POST'])
 def search(query):
     # query=abbreviation_fixer(query)
+    search_gyms=mongo.db.search_gyms
     locations_coordinates.clear()
-    check_searches = Search.query.filter_by(user_input=query).first()
+    check_searches = search_gyms.find_one({'user_input':query})
 
     # if this is a new search
     if check_searches == None:
