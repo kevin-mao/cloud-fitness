@@ -59,8 +59,6 @@ def gym_link_library(gym_name):
     return gym_link
 
 
-
-
 def description(gym_name):
     gym_descriptions = []
     with open('./gym/search/descriptions.csv', 'r') as csv_file:
@@ -94,7 +92,6 @@ def scrape(location, gym_name):
     results = [gym_link,gym_description]
 
     return results
-
 
 if __name__ == '__main__':
     results = scrape('nyc','Crunch')
