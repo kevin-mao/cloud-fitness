@@ -7,7 +7,6 @@ def get_key():
         csv_reader = csv.reader(csv_file)
         for line in csv_reader:
             key=line[0]
-            print(key)
         return key
 API_KEY = get_key()
 
