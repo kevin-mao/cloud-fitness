@@ -32,7 +32,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts, key=API_KEY)
+    return render_template('home.html', form=form, posts=posts, key=API)
 
 @main.route("/about")
 def about():
