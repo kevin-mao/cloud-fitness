@@ -1,3 +1,7 @@
+from _sqlite3 import OperationalError
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
+import time
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
@@ -32,7 +36,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts, key=API)
+    return render_template('home.html', form=form, posts=posts, key=API_KEY)
 
 @main.route("/about")
 def about():
@@ -53,16 +57,23 @@ def send_coordinates():
 def search(query):
     query=abbreviation_fixer(query)
     locations_coordinates.clear()
-    check_searches = Search.query.filter_by(user_input=query).first()
 
+    check_searches = Search.query.filter_by(user_input=query).first()
     # if this is a new search
     if check_searches == None:
         #center lat,lng are the coordinates of the gym 
         center_lat, center_lng, info = maps_scrape(query)
         search = Search(user_input=query,lat=center_lat, lng=center_lng)
-        db.session.add(search)
-        db.session.flush()
-
+        while True:
+            try:
+                search = Search(user_input=query, lat=center_lat, lng=center_lng)
+                db.session.add(search)
+                db.session.flush()
+            except exc.OperationalError:
+                time.sleep(5)
+                db.session.rollback()
+                print("exception")
+            break
         if info != 0:
             # for each gym that is found
             for result in info['results']:
@@ -151,9 +162,13 @@ def search(query):
 
             #if there is only one info object, that must be the info
             if len(gym.info) == 1: 
-                gym.info[0].search_id = search.id  
-
-    db.session.commit()
+                gym.info[0].search_id = search.id
+    while True:
+        try:
+            db.session.commit()
+        except exc.OperationalError:
+            print("second exception")
+        break
     gyms = search.gyms
 
     if len(gyms) == 0:
@@ -260,3 +275,4 @@ def pre_scrape():
 
             db.session.commit()
     return render_template('about.html')
+
