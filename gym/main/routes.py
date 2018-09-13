@@ -66,11 +66,12 @@ def search(query):
         search = Search(user_input=query,lat=center_lat, lng=center_lng)
         while True:
             try:
+                center_lat, center_lng, info = maps_scrape(query)
                 search = Search(user_input=query, lat=center_lat, lng=center_lng)
                 db.session.add(search)
                 db.session.flush()
             except exc.OperationalError:
-                time.sleep(5)
+                time.sleep(10)
                 db.session.rollback()
                 print("exception")
             break
