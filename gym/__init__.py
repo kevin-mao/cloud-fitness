@@ -8,6 +8,7 @@ from flask_pymongo import PyMongo
 
 
 db = SQLAlchemy()
+mongo = PyMongo()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -20,7 +21,7 @@ def create_app(config_class=Config):
     app.config.from_object(Config)
     app.config['MONGO_DBNAME']='cloudfitness_searches'
     app.config['MONGO_URI']='mongodb://drayandkev:cornell2021@ds251002.mlab.com:51002/cloudfitness_searches'
-    mongo=PyMongo(app)
+    mongo.init_app(app)
     db.init_app(app)
     # with app.app_context():
     #     db.create_all()
