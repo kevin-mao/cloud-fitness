@@ -1,2 +1,3 @@
 *.pyc
 gym/config.py
+gym/static/csv/key.csv

@@ -5,6 +5,13 @@
     <fieldset class="form-group">
         <legend class="border-bottom mb-4">Work out for free</legend>
 
+        <div class="nile-slider large-12 column" onload="fadeimages()">
+  <div class="your-class">
+  <div> <img src="{{ url_for('static', filename='gym_pics/image1.jpg') }}"/></div>
+  <div><img src="{{ url_for('static', filename='gym_pics/image2.jpg') }}"/></div>
+  <div><img src="{{ url_for('static', filename='gym_pics/image3.jpg') }}"/></div>
+</div>
+</div>
         <div class="form-group">
             {{ form.search.label(class="form-control-label") }}
             {% if form.search.errors %}
@@ -53,6 +60,18 @@
       var autocomplete = new google.maps.places.Autocomplete(input);
     }
    </script>
+
+         <script type="text/javascript">// change header image after 2 seconds
+    $(document).ready(function(){
+$('.your-class').slick({
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000,
+    fade:true,
+});
+
+    </script>
    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
    </script>
 {% endblock content %}

@@ -61,7 +61,8 @@ def search(query):
     check_searches = Search.query.filter_by(user_input=query).first()
     # if this is a new search
     if check_searches == None:
-        #center lat,lng are the coordinates of the gym 
+        #center lat,lng are the coordinates of the gym
+
         center_lat, center_lng, info = maps_scrape(query)
         search = Search(user_input=query,lat=center_lat, lng=center_lng)
         while True:
@@ -72,6 +73,7 @@ def search(query):
                 db.session.flush()
             except exc.OperationalError:
                 time.sleep(10)
+                db.session.close()
                 db.session.rollback()
                 print("exception")
             break
