@@ -29,8 +29,7 @@ headers = {
 
 
 # will be imported from user's search in future
-
-def query_google_search(location, gym_name):
+def query_bing_search(location, gym_name):
 
     gym_link=gym_link_library(gym_name)
 
@@ -50,33 +49,35 @@ def query_google_search(location, gym_name):
             print(gym_name+": "+link)
             if blacklist(link)==False:
                 return link
-
-
-        # # Because accessing the second page of results from the first is hard, we have two
-        # # different functions for them.
-        # location.replace(" ", "+")
-        # # Replaces any spaces the user types with plus signs so no errors are encountered.
-        #
-        # search_url = "https://google.com/search?q=free" + gym_name + "guest+pass+in" + location
-        # web_page = requests.get(search_url, headers=headers)
-        # # Searches for gym and area
-        #
-        # html_soup = BeautifulSoup(web_page.text, 'html.parser')
-        # gym_links = html_soup.find_all('div', {'class': 'rc'})
-        #
-        # # Turns the get request into soup and gets the first result
-        # for gym_link in gym_links:
-        #     gym_link = gym_link.a['href']
-        #     gym_link = gym_link.replace("/url?q=", "")
-        #     if "24hrs" in gym_link:
-        #         return "https://www.24hourfitness.com/membership/free-pass/#step/1"
-        #     if blacklist(gym_link)==False:
-        #         return gym_link
-    # else:
-    #     return gym_link
     else:
         return gym_link
 
+def query_google_search(location,gym_name):
+    gym_link=gym_link_library(gym_name)
+
+    if gym_link==None:
+            # Because accessing the second page of results from the first is hard, we have two
+        # different functions for them.
+        location.replace(" ", "+")
+        # Replaces any spaces the user types with plus signs so no errors are encountered.
+        
+        search_url = "https://google.com/search?q=free" + gym_name + "guest+pass+in" + location
+        web_page = requests.get(search_url, headers=headers)
+        # Searches for gym and area
+        
+        html_soup = BeautifulSoup(web_page.text, 'html.parser')
+        gym_links = html_soup.find_all('div', {'class': 'rc'})
+        
+        # Turns the get request into soup and gets the first result
+        for gym_link in gym_links:
+            gym_link = gym_link.a['href']
+            gym_link = gym_link.replace("/url?q=", "")
+            if "24hrs" in gym_link:
+                return "https://www.24hourfitness.com/membership/free-pass/#step/1"
+            if blacklist(gym_link)==False:
+                return gym_link
+    else:
+        return gym_link
 
 
 def gym_link_library(gym_name):
