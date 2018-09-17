@@ -1,3 +1,4 @@
 *.pyc
 gym/config.py
+gym/staic/csv/key.csv
 env/
