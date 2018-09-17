@@ -47,8 +47,6 @@ def query_bing_search(location, gym_name):
         for result in search_results['webPages']['value']:
             link=result['url']
             print(gym_name+": "+link)
-            if "24hrs" in gym_link:
-                return "https://www.24hourfitness.com/membership/free-pass/#step/1"
             if blacklist(link)==False:
                 return link
     else:
