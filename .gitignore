@@ -2,4 +2,3 @@
 gym/config.py
 gym/static/csv/key.csv
 env/
-gym/site.db
