@@ -51,7 +51,7 @@ def query_bing_search(location, gym_name):
                 return link
     else:
         return gym_link
-
+        
 def query_google_search(location,gym_name):
     gym_link=gym_link_library(gym_name)
 
@@ -122,7 +122,7 @@ def blacklist(link):
         return False
 
 def scrape(location, gym_name):
-    gym_link = str(query_google_search(location, gym_name))
+    gym_link = str(query_bing_search(location, gym_name))
     gym_description = str(description(gym_name))
     results = [gym_link,gym_description]
 
