@@ -19,12 +19,11 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['MONGO_DBNAME']='cloudfitness_searches'
-    app.config['MONGO_URI']='mongodb://drayandkev:cornell2021@ds251002.mlab.com:51002/cloudfitness_searches'
+    app.config['MONGO_DBNAME']='cloudfitness'
+    app.config['MONGO_URI']='mongodb://kevinmao:cornell2021@ds261332.mlab.com:61332/cloudfitness'
     mongo.init_app(app)
     db.init_app(app)
-    # with app.app_context():
-    #     db.create_all()
+
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)

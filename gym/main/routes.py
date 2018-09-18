@@ -1,3 +1,7 @@
+from _sqlite3 import OperationalError
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
+import time
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
@@ -52,18 +56,31 @@ def send_coordinates():
 
 @main.route("/search/<query>", methods=['GET', 'POST'])
 def search(query):
-    # query=abbreviation_fixer(query)
-    search_gyms=mongo.db.search_gyms
+    query=abbreviation_fixer(query)
+    search_gyms=mongo.db.search
     locations_coordinates.clear()
     check_searches = search_gyms.find_one({'user_input':query})
 
     # if this is a new search
     if check_searches == None:
-        #center lat,lng are the coordinates of the gym 
+        #center lat,lng are the coordinates of the gym
+
         center_lat, center_lng, info = maps_scrape(query)
         search = Search(user_input=query,lat=center_lat, lng=center_lng)
-        db.session.add(search)
-        db.session.flush()
+
+        #keep trying to access DB, just make later people wait for now 
+        while True:
+            try:
+                center_lat, center_lng, info = maps_scrape(query)
+                search = Search(user_input=query, lat=center_lat, lng=center_lng)
+                db.session.add(search)
+                db.session.flush()
+            except exc.OperationalError:
+                time.sleep(10)
+                db.session.close()
+                db.session.rollback()
+                print("DB in use, checking again in 10s...")
+            break
 
         if info != 0:
             # for each gym that is found
@@ -153,9 +170,13 @@ def search(query):
 
             #if there is only one info object, that must be the info
             if len(gym.info) == 1: 
-                gym.info[0].search_id = search.id  
-
-    db.session.commit()
+                gym.info[0].search_id = search.id
+    while True:
+        try:
+            db.session.commit()
+        except exc.OperationalError:
+            print("second exception")
+        break
     gyms = search.gyms
 
     if len(gyms) == 0:
@@ -165,8 +186,7 @@ def search(query):
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
-    return render_template('results.html', title="Search Results", search=search, key=API_KEY
-)
+    return render_template('results.html', title="Search Results", search=search, key=API_KEY)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])
@@ -262,3 +282,4 @@ def pre_scrape():
 
             db.session.commit()
     return render_template('about.html')
+
