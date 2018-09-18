@@ -6,26 +6,29 @@
         	Search for more passes
         </button>   	
     </form>
-    {% for gym in search.gyms %}
+    {% for gym_id in current_search['gym_id'] %}
+    	{% set current_gym = gym.find_one({'_id':gym_id}) %}
 	   <article class="media content-section">
         	<div class="media-body">
         		<div class="row">
         		<div class="col-md-4">
-        		{% for info in gym.info %}
-	            	{% if info.search_id == search.id %}
-		           		<h4><a class="article-title" href="{{ info.link}}" target="_blank">{{ gym.name }}</a></h4>
+        		{% for info_id in current_gym['info_id'] %}
+        			{% set current_info = info.find_one({'_id':info_id}) %}
+	            	{% if current_search['_id'] in current_info['search_id'] %}
+		           		<h4><a class="article-title" href="{{ current_info['link']}}" target="_blank">{{ current_info['name'] }}</a></h4>
 		        </div>
 
 				<div class="col-md-8">	
-		            	<p class="article-content" > {{info.description}}</p>
+		            	<p class="article-content" > {{current_info['description']}}</p>
 	            	{% endif %}
 	            {% endfor %}	           
-		            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{gym.name}}'); toggleFocus('{{gym.name}}'); return false;">All locations</a>
-		         	<div class='locations' id='sectiontohide {{gym.name}}' style="display: none;">		         	
-			            {% for location in gym.locations %}
-			            	{% if location.search_id == search.id %}
-					            <a href="{{location.link}}" target="_blank" class="article-content"> 
-					            	 {{ location.address}}
+		            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{current_gym['name']}}'); toggleFocus('{{current_gym['name']}}'); return false;">All locations</a>
+		         	<div class='locations' id='sectiontohide {{current_gym['name']}}' style="display: none;">		         	
+			            {% for location_id in current_gym['location_id'] %}
+			            	{% set current_location = location.find_one({'_id':location_id}) %}
+			            	{% if current_search['_id'] in current_location['search_id']%}
+					            <a href="{{current_location['link']}}" target="_blank" class="article-content"> 
+					            	 {{ current_location['address']}}
 					            </a>
 				            {% endif%}
 				        {% endfor%}

@@ -30,11 +30,9 @@ headers = {
 
 # will be imported from user's search in future
 def query_bing_search(location, gym_name):
-
     gym_link=gym_link_library(gym_name)
 
     if gym_link==None:
-        print("Gym: "+gym_name )
         search_term = "free "+gym_name+" guest passes in "+location
         headers = {"Ocp-Apim-Subscription-Key":subscription_key}
         params = {"q": search_term, "textDecorations": True, "textFormat": "HTML"}
