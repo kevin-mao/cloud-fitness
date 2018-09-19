@@ -4,6 +4,12 @@
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
         <legend class="border-bottom mb-4">Work out for free</legend>
+        
+<div id="stage">
+        <a>  <img src="{{ url_for('static', filename='slideshow/image1.jpg' )}}"/></a>
+        <a><img src="{{ url_for('static', filename='slideshow/image2.jpg' )}}"/></a>
+        <a><img src="{{ url_for('static', filename='slideshow/image3.jpg' )}}"/></a>
+</div>        
 
         <div class="form-group">
             {{ form.search.label(class="form-control-label") }}
@@ -47,12 +53,25 @@
         ...
       {% endif %}
     {% endfor %}
-   <script type="text/javascript">
-     function activatePlacesSearch(){
-      var input = document.getElementById('search_term');
-      var autocomplete = new google.maps.places.Autocomplete(input);
+<script type="text/javascript">
+
+  // Original JavaScript code by Chirp Internet: www.chirp.com.au
+  // Please acknowledge use of this code by including this header.
+
+  window.addEventListener("DOMContentLoaded", function(e) {
+
+    var stage = document.getElementById("stage");
+    var fadeComplete = function(e) { stage.appendChild(arr[0]); };
+    var arr = stage.getElementsByTagName("a");
+    for(var i=0; i < arr.length; i++) {
+      arr[i].addEventListener("animationend", fadeComplete, false);
     }
-   </script>
+
+  }, false);
+
+</script>
+    
+
    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
    </script>
 {% endblock content %}
