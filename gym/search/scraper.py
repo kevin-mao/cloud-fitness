@@ -33,7 +33,7 @@ def query_bing_search(location, gym_name):
         print("Gym: "+gym_name )
         search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
         search_term = "free "+gym_name+" guest passes in "+location
-        headers = {"Ocp-Apim-Subscription-Key":subscription_key}
+        headers = {"Ocp-Apim-Subscription-Key":BING_KEY}
         params = {"q": search_term, "textDecorations": True, "textFormat": "HTML"}
         response = requests.get(search_url, headers=headers, params=params)
         response.raise_for_status()
