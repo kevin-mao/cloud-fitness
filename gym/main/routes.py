@@ -36,7 +36,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts, key=API_KEY)
+    return render_template('home.html', form=form, posts=posts)
 
 @main.route("/about")
 def about():
@@ -179,8 +179,7 @@ def search(query):
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
-    return render_template('results.html', title="Search Results", search=search, key=API_KEY
-)
+    return render_template('results.html', title="Search Results", search=search)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])

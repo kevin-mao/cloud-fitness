@@ -6,7 +6,7 @@
         <legend class="border-bottom mb-4">Work out for free</legend>
         
 <div id="stage">
-        <a>  <img src="{{ url_for('static', filename='slideshow/image1.jpg' )}}"/></a>
+        <a><img src="{{ url_for('static', filename='slideshow/image1.jpg' )}}"/></a>
         <a><img src="{{ url_for('static', filename='slideshow/image2.jpg' )}}"/></a>
         <a><img src="{{ url_for('static', filename='slideshow/image3.jpg' )}}"/></a>
 </div>        
@@ -53,25 +53,7 @@
         ...
       {% endif %}
     {% endfor %}
-<script type="text/javascript">
 
-  // Original JavaScript code by Chirp Internet: www.chirp.com.au
-  // Please acknowledge use of this code by including this header.
-
-  window.addEventListener("DOMContentLoaded", function(e) {
-
-    var stage = document.getElementById("stage");
-    var fadeComplete = function(e) { stage.appendChild(arr[0]); };
-    var arr = stage.getElementsByTagName("a");
-    for(var i=0; i < arr.length; i++) {
-      arr[i].addEventListener("animationend", fadeComplete, false);
-    }
-
-  }, false);
-
-</script>
-    
-
-   <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqRxm76Tfg_STWzipqaUxG7vQk4sJzSZ4&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
    </script>
 {% endblock content %}
