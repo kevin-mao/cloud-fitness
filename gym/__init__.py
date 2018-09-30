@@ -4,9 +4,11 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from gym.config import Config
+from flask_pymongo import PyMongo
 
 
 db = SQLAlchemy()
+mongo = PyMongo()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
@@ -17,10 +19,11 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    app.config['MONGO_DBNAME']='cloudfitness'
+    app.config['MONGO_URI']='mongodb://kevinmao:cornell2021@ds261332.mlab.com:61332/cloudfitness'
+    mongo.init_app(app)
     db.init_app(app)
-    # with app.app_context():
-    #     db.create_all()
+
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)

@@ -5,23 +5,17 @@ import time
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
-from gym import db
+from gym import db, mongo
 from gym.models import Search, Gym, Location, Post, Info
 from gym.search.forms import SearchForm
 from gym.search.scraper import scrape
 from gym.search.maps_scraper import maps_scrape, get_place_details, abbreviation_fixer
 from flask_login import login_required
+from flask_pymongo import PyMongo
 import json
-import csv
+import os 
 
-def get_key():
-    with open('./gym/static/csv/key.csv', 'r') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        for line in csv_reader:
-            key=line[0]
-        return key
-API_KEY = get_key()
-
+API_KEY = os.environ['API_KEY']
 main = Blueprint('main', __name__)
 locations_coordinates = {}
 
@@ -36,7 +30,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts)
+    return render_template('home.html', form=form, posts=posts, key=API_KEY)
 
 @main.route("/about")
 def about():
@@ -55,39 +49,35 @@ def send_coordinates():
 
 @main.route("/search/<query>", methods=['GET', 'POST'])
 def search(query):
-    query=abbreviation_fixer(query)
     locations_coordinates.clear()
+    query=abbreviation_fixer(query)
 
-    check_searches = Search.query.filter_by(user_input=query).first()
+    #initialize DB
+    search=mongo.db.search
+    gym = mongo.db.gym
+    location = mongo.db.location
+    info = mongo.db.info           
+
+    check_searches = search.find_one({'user_input':query})
+
     # if this is a new search
     if check_searches == None:
-        #center lat,lng are the coordinates of the gym
+            #center lat,lng are the coordinates of the gym
 
-        center_lat, center_lng, info = maps_scrape(query)
-        search = Search(user_input=query,lat=center_lat, lng=center_lng)
+        center_lat, center_lng, data = maps_scrape(query)
+        current_search = {'gym_id':[],'user_input':query,'lat':center_lat, 'lng':center_lng}
+        search.insert_one(current_search)
+        print(current_search['_id'])
 
-        #keep trying to access DB, just make later people wait for now 
-        while True:
-            try:
-                center_lat, center_lng, info = maps_scrape(query)
-                search = Search(user_input=query, lat=center_lat, lng=center_lng)
-                db.session.add(search)
-                db.session.flush()
-            except exc.OperationalError:
-                time.sleep(10)
-                db.session.close()
-                db.session.rollback()
-                print("DB in use, checking again in 10s...")
-            break
-
-        if info != 0:
+        if data != 0:
             # for each gym that is found
-            for result in info['results']:
+            for result in data['results']:
                 place_id = result['place_id']
                 lat = result['geometry']['location']['lat']
                 lng = result['geometry']['location']['lng']
 
                 maps_link, gym_name, address = get_place_details(place_id)
+                print(gym_name)
                 # this photo reference can be used in the google places photo api
                 # to get a posted picture, but it is not their logo
                 # image = result['photo_reference']
@@ -101,81 +91,90 @@ def search(query):
                     locations_coordinates['gyms'].append({'name': gym_name, 'coordinates':[lat, lng], 
                         'link': maps_link, 'address': address})
 
-                check_gyms = Gym.query.filter_by(name=gym_name).first()
+                check_gyms = gym.find_one({'name':gym_name})
                 # if this is a new gym, create the Gym, a Location, and append
                 if check_gyms == None:
-                    gym = Gym(name=gym_name, search_id=search.id)
-                    location = Location(place_id=place_id, address=address, search_id=search.id,
-                                        link=maps_link, lat=lat, lng=lng)
-                else:
-                    gym = check_gyms
-                    gym.search_id = search.id
+                    current_gym = {'search_id':[current_search['_id']], 'location_id':[], 'info_id': [],'name':gym_name}
+                    gym.insert_one(current_gym)
 
-                    check_locations = Location.query.with_parent(gym).filter_by(address=address).first()
+                    current_location = {'search_id':[current_search['_id']],'gym_id':current_gym['_id'],'place_id':place_id, 'name':gym_name,
+                        'address':address,'link':maps_link, 'lat':lat, 'lng':lng}
+                    location.insert_one(current_location)
+                    current_gym['location_id'].append(current_location['_id'])
+                else:
+                    current_gym = check_gyms
+
+                    if current_gym['search_id'][0] != current_search['_id']:
+                        current_gym['search_id'].append(current_search['_id'])
+
+                    check_locations = location.find_one({'address':address})
                     # if new location, create location
                     if check_locations == None:
-                        location = Location(place_id=place_id, address=address,
-                                            search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                        current_location = {'search_id':[current_search['_id']],'gym_id':current_gym['_id'],'place_id':place_id, 'name':gym_name,   
+                            'address':address,'link':maps_link, 'lat':lat, 'lng':lng}
+                        location.insert_one(current_location)
+                        current_gym['location_id'].append(current_location['_id'])
                         # if location exists update its search id, so we know it corresponds to this search.
                     else:
-                        location = check_locations
-                        location.search_id = search.id
+                        current_location = check_locations
+                        current_location['search_id'].append(current_search['_id'])
 
-                gym.locations.append(location)
-                search.gyms.append(gym)
+                #add gym to search if its not there already 
+                if current_gym['_id'] not in current_search['gym_id']:
+                    current_search['gym_id'].append(current_gym['_id'])
 
                 link_and_description = scrape(query, gym_name)
                 link = link_and_description[0]
                 description = link_and_description[1]
 
+                
                 # check gym info
-                if gym.info == []:
-                    info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                if current_gym['info_id'] == []:
+                    current_info = {'search_id':[current_search['_id']], 'gym_id':current_gym['_id'], 'link':link, 'description':description, 'name':gym_name}
+                    info.insert_one(current_info)
+                    current_gym['info_id'].append(current_info['_id'])
                 # else if it has info, if info is different add a new info
                 else:
                     #links = [i.link for i in gym.info]
-                    check_info = Info.query.with_parent(gym).filter_by(link=link).first()
+                    check_info = info.find_one({'link':link})
                     # if info is new, create new Info object
-                    # this should prevent duplicate info objects, but idk if it works
                     if check_info == None:
-                        info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                        current_info = {'search_id':[current_search['_id']], 'gym_id':current_gym['_id'],'link':link, 'description':description, 'name':gym_name}
+                        info.insert_one(current_info)
+                        current_gym['info_id'].append(current_info['_id'])
                     # if info is right, just update search id
                     else:
-                        info = check_info
-                        info.search_id = search.id
+                        current_info = check_info
+                        if current_search['_id'] not in current_info['search_id']:
+                            current_info['search_id'].append(current_search['_id'])
 
-                gym.info.append(info)
+                info.save(current_info)
+                gym.save(current_gym)
+                location.save(current_location)
 
     else:
-        search = check_searches
-        center_lat = search.lat
-        center_lng = search.lng
+        current_search = check_searches
+        center_lat = current_search['lat']
+        center_lng = current_search['lng']
         # even though the search has been done before, we still need to update info
-        for gym in search.gyms:
+        for gym_id in current_search['gym_id']:
             # update
-            gym.search_id = search.id
+            current_gym = gym.find_one({'_id':gym_id})
             #send coordinates api
-            for location in gym.locations:
-                if location.search_id == search.id: 
+            for location_id in current_gym['location_id']:
+                current_location = location.find_one({'_id':location_id})
+                if current_search['_id'] in current_location['search_id']: 
                     if locations_coordinates == {}:
                         locations_coordinates['center'] = [center_lat, center_lng]
-                        locations_coordinates['gyms']=[{'name': gym.name, 'coordinates':[location.lat, location.lng], 
-                        'link': location.link, 'address': location.address}]
+                        locations_coordinates['gyms']=[{'name': current_gym['name'], 'coordinates':[current_location['lat'], current_location['lng']], 
+                        'link': current_location['link'], 'address': current_location['address']}]
                     else:   
-                        locations_coordinates['gyms'].append({'name': gym.name, 
-                            'coordinates':[location.lat, location.lng], 'link': location.link, 
-                            'address': location.address})
+                        locations_coordinates['gyms'].append({'name': current_gym['name'], 
+                            'coordinates':[current_location['lat'], current_location['lng']], 'link': current_location['link'], 
+                            'address': current_location['address']})
 
-            #if there is only one info object, that must be the info
-            if len(gym.info) == 1: 
-                gym.info[0].search_id = search.id
-    while True:
-        try:
-            db.session.commit()
-        except exc.OperationalError:
-            print("second exception")
-        break
-    gyms = search.gyms
+    search.save(current_search)
+    gyms = current_search['gym_id']
 
     if len(gyms) == 0:
         flash('Did not find any gyms passes! This can either be because there are none or our servers are down.' + 
@@ -184,7 +183,7 @@ def search(query):
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
-    return render_template('results.html', title="Search Results", search=search)
+    return render_template('results.html', title="Search Results", search=search, key=API_KEY)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])
@@ -195,89 +194,104 @@ def pre_scrape():
         csv_reader = csv.reader(csv_file)
         # Opens csv file with names of cities
         for line in csv_reader:
-            place=line[1]+", "+line[2]+", USA"
-            place=place.lower()
-            print(place)
-            check_searches = Search.query.filter_by(user_input=place).first()
+            query=line[1]+", "+line[2]+", USA"
+            query=place.lower()
+            print(query)
+
+            #initialize DB
+            search=mongo.db.search
+            gym = mongo.db.gym
+            location = mongo.db.location
+            info = mongo.db.info           
+
+            check_searches = search.find_one({'user_input':query})
+
             # if this is a new search
             if check_searches == None:
-                #center lat,lng are the coordinates of the gym 
-                center_lat, center_lng, info = maps_scrape(place)
-                search = Search(user_input=place,lat=center_lat, lng=center_lng)
-                db.session.add(search)
-                db.session.flush()
+                    #center lat,lng are the coordinates of the gym
 
-                if info != 0:
+                center_lat, center_lng, data = maps_scrape(query)
+                current_search = {'gym_id':[],'user_input':query,'lat':center_lat, 'lng':center_lng}
+                search.insert_one(current_search)
+                print(current_search['_id'])
+
+                if data != 0:
                     # for each gym that is found
-                    for result in info['results']:
+                    for result in data['results']:
                         place_id = result['place_id']
                         lat = result['geometry']['location']['lat']
                         lng = result['geometry']['location']['lng']
 
                         maps_link, gym_name, address = get_place_details(place_id)
+                        print(gym_name)
                         # this photo reference can be used in the google places photo api
                         # to get a posted picture, but it is not their logo
                         # image = result['photo_reference']
 
-                        check_gyms = Gym.query.filter_by(name=gym_name).first()
+                        check_gyms = gym.find_one({'name':gym_name})
                         # if this is a new gym, create the Gym, a Location, and append
                         if check_gyms == None:
-                            gym = Gym(name=gym_name, search_id=search.id)
-                            print('New: ', gym)
-                            location = Location(place_id=place_id, address=address, search_id=search.id,
-                                                link=maps_link, lat=lat, lng=lng)
-                        else:
-                            gym = check_gyms
-                            print('Old: ', gym)
-                            gym.search_id = search.id
+                            current_gym = {'search_id':[current_search['_id']], 'location_id':[], 'info_id': [],'name':gym_name}
+                            gym.insert_one(current_gym)
 
-                            check_locations = Location.query.with_parent(gym).filter_by(address=address).first()
+                            current_location = {'search_id':[current_search['_id']],'gym_id':current_gym['_id'],'place_id':place_id, 'name':gym_name,
+                                'address':address,'link':maps_link, 'lat':lat, 'lng':lng}
+                            location.insert_one(current_location)
+                            current_gym['location_id'].append(current_location['_id'])
+                        else:
+                            current_gym = check_gyms
+
+                            if current_gym['search_id'][0] != current_search['_id']:
+                                current_gym['search_id'].append(current_search['_id'])
+
+                            check_locations = location.find_one({'address':address})
                             # if new location, create location
                             if check_locations == None:
-                                location = Location(place_id=place_id, address=address,
-                                                    search_id=search.id, link=maps_link, lat=lat, lng=lng)
+                                current_location = {'search_id':[current_search['_id']],'gym_id':current_gym['_id'],'place_id':place_id, 'name':gym_name,   
+                                    'address':address,'link':maps_link, 'lat':lat, 'lng':lng}
+                                location.insert_one(current_location)
+                                current_gym['location_id'].append(current_location['_id'])
                                 # if location exists update its search id, so we know it corresponds to this search.
                             else:
-                                location = check_locations
-                                location.search_id = search.id
+                                current_location = check_locations
+                                current_location['search_id'].append(current_search['_id'])
 
-                        gym.locations.append(location)
-                        search.gyms.append(gym)
+                        #add gym to search if its not there already 
+                        if current_gym['_id'] not in current_search['gym_id']:
+                            current_search['gym_id'].append(current_gym['_id'])
 
-                        link_and_description = scrape(place, gym_name)
+                        link_and_description = scrape(query, gym_name)
                         link = link_and_description[0]
                         description = link_and_description[1]
-                        print(link)
+
+                        
                         # check gym info
-                        if gym.info == []:
-                            info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                        if current_gym['info_id'] == []:
+                            current_info = {'search_id':[current_search['_id']], 'gym_id':current_gym['_id'], 'link':link, 'description':description, 'name':gym_name}
+                            info.insert_one(current_info)
+                            current_gym['info_id'].append(current_info['_id'])
                         # else if it has info, if info is different add a new info
                         else:
                             #links = [i.link for i in gym.info]
-                            check_info = Info.query.with_parent(gym).filter_by(link=link).first()
+                            check_info = info.find_one({'link':link})
                             # if info is new, create new Info object
                             if check_info == None:
-                                info = Info(link=link, description=description, search_id=search.id, gym_id=gym.id)
+                                current_info = {'search_id':[current_search['_id']], 'gym_id':current_gym['_id'],'link':link, 'description':description, 'name':gym_name}
+                                info.insert_one(current_info)
+                                current_gym['info_id'].append(current_info['_id'])
                             # if info is right, just update search id
                             else:
-                                info = check_info
-                                info.search_id = search.id
+                                current_info = check_info
+                                if current_search['_id'] not in current_info['search_id']:
+                                    current_info['search_id'].append(current_search['_id'])
 
-                        gym.info.append(info)
+                        info.save(current_info)
+                        gym.save(current_gym)
+                        location.save(current_location)
 
             else:
-                search = check_searches
-                center_lat = search.lat
-                center_lng = search.lng
-                # even though the search has been done before, we still need to update info
-                for gym in search.gyms:
-                    # update
-                    gym.search_id = search.id
+                current_search = check_searches
 
-                    #if there is only one info object, that must be the info
-                    if len(gym.info) == 1: 
-                        gym.info[0].search_id = search.id  
-
-            db.session.commit()
+            search.save(current_search)           
     return render_template('about.html')
 

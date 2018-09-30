@@ -7,11 +7,7 @@ import json
 import os 
 
 API_KEY = os.environ['API_KEY']
-
-#Bing API Search set up
-subscription_key = API_KEY
-assert subscription_key
-search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
+BING_KEY = os.environ['BING_KEY']
 
 
 # from search.routes import Search
@@ -24,13 +20,12 @@ headers = {
 
 # will be imported from user's search in future
 def query_bing_search(location, gym_name):
-
     gym_link=gym_link_library(gym_name)
 
     if gym_link==None:
-        print("Gym: "+gym_name )
+        search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
         search_term = "free "+gym_name+" guest passes in "+location
-        headers = {"Ocp-Apim-Subscription-Key":subscription_key}
+        headers = {"Ocp-Apim-Subscription-Key":BING_KEY}
         params = {"q": search_term, "textDecorations": True, "textFormat": "HTML"}
         response = requests.get(search_url, headers=headers, params=params)
         response.raise_for_status()
