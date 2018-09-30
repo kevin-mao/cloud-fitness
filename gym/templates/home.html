@@ -55,10 +55,6 @@
         ...
       {% endif %}
     {% endfor %}
-<<<<<<< HEAD
-
-   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqRxm76Tfg_STWzipqaUxG7vQk4sJzSZ4&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
-=======
    <script type="text/javascript">
      function activatePlacesSearch(){
       var input = document.getElementById('search_term');
@@ -68,16 +64,14 @@
 
          <script type="text/javascript">// change header image after 2 seconds
     $(document).ready(function(){
-$('.your-class').slick({
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 2000,
-    fade:true,
-});
+    $('.your-class').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+        fade:true,
+    });
 
     </script>
    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
->>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
-   </script>
 {% endblock content %}

@@ -183,7 +183,8 @@ def search(query):
         flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
-    return render_template('results.html', title="Search Results", search=search, key=API_KEY)
+    return render_template('results.html', title="Search Results", current_search=current_search, search=search, 
+        gym=gym, info=info, location=location, key=API_KEY)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])

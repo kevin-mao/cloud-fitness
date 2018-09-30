@@ -1,4 +1,5 @@
 $( document ).ready(function() {
+    console.log('read')
   // Original JavaScript code by Chirp Internet: www.chirp.com.au
   // Please acknowledge use of this code by including this header.
 window.addEventListener("DOMContentLoaded", function(e) {
