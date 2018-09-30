@@ -1,6 +1,6 @@
 import requests 
 import os 
-
+import csv
 API_KEY = os.environ['API_KEY']
 
 #get coordinates of the location inputted so that we can accurately search for 
