@@ -13,15 +13,6 @@ from gym.search.maps_scraper import maps_scrape, get_place_details, abbreviation
 from flask_login import login_required
 from flask_pymongo import PyMongo
 import json
-import csv
-
-def get_key():
-    with open('./gym/static/csv/key.csv', 'r') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        for line in csv_reader:
-            key=line[0]
-        return key
-API_KEY = get_key()
 
 main = Blueprint('main', __name__)
 locations_coordinates = {}
@@ -37,7 +28,7 @@ def home():
         query = form.search.data.lower()
         range = form.range.data
         return redirect(url_for('main.search', query=query))
-    return render_template('home.html', form=form, posts=posts, key=API_KEY)
+    return render_template('home.html', form=form, posts=posts)
 
 @main.route("/about")
 def about():
@@ -191,7 +182,7 @@ def search(query):
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
     return render_template('results.html', title="Search Results", current_search=current_search, search=search,
-        location=location, gym = gym, info=info, key=API_KEY)
+        location=location, gym = gym, info=info)
 
 
 @main.route("/scrape", methods=['GET', 'POST'])
