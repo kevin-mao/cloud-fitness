@@ -4,21 +4,17 @@ import requests
 from bs4 import BeautifulSoup
 from pathlib import Path
 import json
+from boto.s3.connection import S3Connection
+import os
+import urllib.request
 
-def get_key():
-    with open('./gym/static/csv/key.csv', 'r') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        for line in csv_reader:
-            key=line[1]
-            print(key)
-        return key
-API_KEY=get_key()
+try: 
+    API_KEY, BING_KEY= S3Connection(os.environ['API_KEY'], os.environ['BING_KEY'])
+except: 
+    API_KEY= os.environ['API_KEY']
+    BING_KEY = os.environ['BING_KEY']
 
-#Bing API Search set up
-subscription_key = API_KEY
-assert subscription_key
-search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
-
+assert API_KEY, BING_KEY
 
 # from search.routes import Search
 headers = {
@@ -35,6 +31,7 @@ def query_bing_search(location, gym_name):
 
     if gym_link==None:
         print("Gym: "+gym_name )
+        search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
         search_term = "free "+gym_name+" guest passes in "+location
         headers = {"Ocp-Apim-Subscription-Key":subscription_key}
         params = {"q": search_term, "textDecorations": True, "textFormat": "HTML"}

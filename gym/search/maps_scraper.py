@@ -1,14 +1,17 @@
 import requests 
 import csv 
+import os 
+from boto.s3.connection import S3Connection
+import os
+import urllib.request
 
-#top secret api key
-def get_key():
-    with open('./gym/static/csv/key.csv', 'r') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        for line in csv_reader:
-            key=line[0]
-        return key
-API_KEY = get_key()
+try: 
+    API_KEY, BING_KEY= S3Connection(os.environ['API_KEY'], os.environ['BING_KEY'])
+except: 
+    API_KEY= os.environ['API_KEY']
+    BING_KEY = os.environ['BING_KEY']
+
+assert API_KEY, BING_KEY
 
 #get coordinates of the location inputted so that we can accurately search for 
 def find_place(location):
