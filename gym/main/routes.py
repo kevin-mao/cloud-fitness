@@ -176,7 +176,7 @@ def search(query):
         flash('Did not find any gyms passes! This can either be because there are none or our servers are down.' + 
             ' Please try again at a later time.', 'danger')
     elif len(gyms) == 1:
-        flash('Found {} pass at this gyms by {}!'.format(len(gyms), query), 'success')
+        flash('Found {} pass at this gym by {}!'.format(len(gyms), query), 'success')
     else:
         flash('Found {} passes at these gyms by {}!'.format(len(gyms), query), 'success')
     return render_template('results.html', title="Search Results", search=search, key=API_KEY
