@@ -1,7 +1,9 @@
 body {
   background: #fafafa;
   color: #333333;
-  margin-top: 5rem;
+padding:0px;
+    margin-top:3.5em;
+    width:100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -30,6 +32,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
+
 }
 
 .article-title {
@@ -93,7 +96,7 @@ a.article-title:hover {
     position: absolute;
   }
   #stage a img {
-    padding: 10px;
+    
     border: 1px solid #ccc;
     background: #fff;
   }
@@ -115,3 +118,72 @@ a.article-title:hover {
     from { opacity: 1.0; }
     to   { opacity: 0.0; }
   }
+
+.row{
+    flex-direction: row;
+   
+}
+.left-box{
+    flex-grow:1;
+}
+
+.main-box{
+    flex-grow:1;
+    
+}
+
+.background {
+    
+    width:100%;
+    display: flex;
+    flex-direction: row;
+     background-image: url(slideshow/image1.jpg);
+    background-repeat: no-repeat;
+    background-size:cover;
+    padding:100px;
+    
+ 
+}
+
+.home_container{
+   width:100%;
+
+}
+
+
+.btn{
+    background-color:rgba(255, 255, 255, .85);
+}
+
+.mb-4{
+    background-color:rgba(244, 244, 244, .9);
+    border-radius:3px;
+    display:inline;
+    width:40%;
+    border-width:1px;
+    border-color:darkgrey;
+    border-style: solid;
+    padding: 5px;
+    border-bottom: 1px solid darkgrey;
+
+}
+
+.home-container border-bottom{
+
+    border-bottom: 1px solid darkgrey;
+}
+
+
+
+.form-control-label{
+    background-color:rgba(244, 244, 244, .9);
+    border-radius:2px;
+     border-width: 1px;
+    border-color:darkgrey;
+    border-style: solid;
+    padding:5px;
+}
+
+.col-md-box{
+   width:100%;
+}
