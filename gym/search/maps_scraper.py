@@ -40,7 +40,7 @@ def text_search(lat,lng, name):
 # those weird where the franchise has a different name for each location
 def check_name(name):
     parts = name.split(" ")
-    bad_names = ['Crunch', 'Equinox', 'Intoxx', 'GoodLife', 'Planet', 'Anytime', 'Blink', 'BodyScapes']
+    bad_names = ['Crunch', 'Equinox', 'Intoxx', 'GoodLife', 'Planet', 'Anytime', 'Blink', 'BodyScapes', 'EōS']
     for bn in bad_names: 
         if bn in parts:
             name = parts[0] + ' Fitness'

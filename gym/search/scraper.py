@@ -104,7 +104,7 @@ def description(gym_name):
                 return gym_description
 
             else:
-                gym_description='Cool gym pass!'
+                gym_description='Click link for more information.'
 
     return gym_description
 

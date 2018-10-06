@@ -47,8 +47,8 @@
 
 
      <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; 
-     			var markers = Object.create(null);;
-    function initMap() {
+     	var markers = Object.create(null);;
+        function initMap() {
         
         const Http = new XMLHttpRequest();
         const url=SCRIPT_ROOT + '/coordinates';
@@ -76,7 +76,7 @@
                 var gym_info = data.gyms[i];
                 var LatLng = {'lat': gym_info['coordinates'][0], 'lng': gym_info['coordinates'][1]};
 
-                var contentString = '<div class="infowindow"><h6 style="margin-bottom:.2rem;">'+ gym_info['name'] + '</h6> <p style="margin-bottom:1%"> This is a great gym!</p>'+'<p style="margin-bottom:1%">'+ gym_info['address'] + '</p> <a href='+ gym_info['link'] +' target="_blank"> View on Google Maps </a></div>';
+                var contentString = '<div class="infowindow"><h6 style="margin-bottom:.2rem;">'+ gym_info['name'] + '</h6> <p style="margin-bottom:1%">'+ gym_info['address'] + '</p> <a href='+ gym_info['link'] +' target="_blank"> View in Google Maps </a></div>';
                 var infowindow = new google.maps.InfoWindow({
                   content: contentString
                 });
