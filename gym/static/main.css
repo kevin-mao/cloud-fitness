@@ -1,6 +1,6 @@
 body {
   background: #fafafa;
-  color: #333333;
+  
 padding:0px;
     margin-top:3.5em;
     width:100%;
@@ -121,7 +121,7 @@ a.article-title:hover {
 
 .row{
     flex-direction: row;
-    background-color:black;
+    
    
 }
 .left-box{
