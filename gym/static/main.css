@@ -1,7 +1,9 @@
 body {
   background: #fafafa;
   color: #333333;
-  margin-top: 5rem;
+padding:0px;
+    margin-top:3.5em;
+    width:100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -30,6 +32,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid #dddddd;
   border-radius: 3px;
   margin-bottom: 20px;
+
 }
 
 .article-title {
@@ -93,7 +96,7 @@ a.article-title:hover {
     position: absolute;
   }
   #stage a img {
-    padding: 10px;
+    
     border: 1px solid #ccc;
     background: #fff;
   }
@@ -115,3 +118,97 @@ a.article-title:hover {
     from { opacity: 1.0; }
     to   { opacity: 0.0; }
   }
+
+.row{
+    flex-direction: row;
+    background-color:black;
+   
+}
+.left-box{
+    flex-grow:1;
+}
+
+.main-box{
+    flex-grow:1;
+    
+}
+
+.background {
+    position: relative;
+  z-index: 1;
+    width:100%;
+    
+     background-image: url(slideshow/image1.jpg);
+    background-size:cover;
+    background-position:center center;
+    
+    @include:dark-overlay; 
+ 
+}
+
+@mixin dark-overlay{
+  &:after{
+    content: "";
+    width: 50%;
+    height: auto;
+    position: absolute;
+    z-index: -1;  // Take note of this negative z-index and compare to each article's positive z-index. This helps your content to show up over the overlay.
+    top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+  }
+}
+
+.overlay{
+     display: flex;
+    flex-direction: row;
+    padding:100px;
+    background-color:rgba(0, 0, 0, 0.6);
+}
+
+.background:after{
+  background:rgba(0, 0, 0, 0.75);
+}
+
+.home_container{
+   width:100%;
+
+}
+
+
+.btn{
+    background-color:rgba(255, 255, 255, .85);
+}
+
+.mb-4{
+    
+    border-radius:3px;
+    display:inline;
+    width:40%;
+    color:#ffffff;
+ 
+
+}
+
+
+
+
+
+.home-container border-bottom{
+
+    
+}
+
+.filter{
+    
+}
+
+
+.form-control-label{
+    color:#ffffff;
+}
+
+.col-md-box{
+   width:100%;
+}

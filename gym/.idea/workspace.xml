@@ -16,6 +16,7 @@
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <state relative-caret-position="17">
               <caret line="61" selection-start-line="61" selection-end-line="61" />
 =======
@@ -24,6 +25,9 @@
 >>>>>>> 55df884145d7617c28023eadb29b6d846c0148dd
 =======
             <state relative-caret-position="1309">
+=======
+            <state relative-caret-position="17">
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
               <caret line="77" column="8" selection-start-line="77" selection-start-column="8" selection-end-line="77" selection-end-column="8" />
 >>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
               <folding>
@@ -36,8 +40,8 @@
       <file leaf-file-name="maps_scraper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/search/maps_scraper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="986">
-              <caret line="59" column="105" selection-start-line="59" selection-start-column="101" selection-end-line="59" selection-end-column="105" />
+            <state relative-caret-position="578">
+              <caret line="35" selection-start-line="35" selection-end-line="35" />
             </state>
           </provider>
         </entry>
@@ -54,8 +58,13 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="613">
               <caret line="83" selection-start-line="83" selection-end-line="83" />
+=======
+            <state relative-caret-position="506">
+              <caret line="97" column="80" selection-start-line="97" selection-start-column="80" selection-end-line="97" selection-end-column="80" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
             </state>
           </provider>
         </entry>
@@ -63,6 +72,7 @@
       <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main/routes.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             <state relative-caret-position="168">
@@ -78,6 +88,10 @@
             <state relative-caret-position="17">
               <caret line="1" column="1" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="21" />
 >>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
+=======
+            <state relative-caret-position="51">
+              <caret line="3" column="36" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="36" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
             </state>
           </provider>
         </entry>
@@ -134,8 +148,13 @@
       <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main/routes.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="297">
               <caret line="70" column="59" selection-start-line="70" selection-start-column="59" selection-end-line="70" selection-end-column="59" />
+=======
+            <state relative-caret-position="574">
+              <caret line="208" column="40" selection-start-line="208" selection-start-column="40" selection-end-line="208" selection-end-column="40" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
 >>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
@@ -199,6 +218,7 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="ProjectFrameBounds">
 <<<<<<< HEAD
     <option name="x" value="950" />
@@ -208,6 +228,11 @@
     <option name="y" value="1" />
     <option name="width" value="979" />
 >>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
+=======
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="950" />
+    <option name="width" value="980" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
     <option name="height" value="1040" />
   </component>
   <component name="ProjectView">
@@ -313,6 +338,7 @@
   </component>
   <component name="ToolWindowManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <frame x="760" y="0" width="784" height="832" extended-state="0" />
     <editor active="true" />
     <layout>
@@ -322,6 +348,9 @@
 =======
     <frame x="-6" y="1" width="783" height="832" extended-state="0" />
     <editor active="true" />
+=======
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.32594523" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -578,13 +607,6 @@
 =======
 >>>>>>> dbd53705b46a5b3d2c760eef34c330921adf7ecf
     <entry file="file://$PROJECT_DIR$/search_models.py" />
-    <entry file="file://$PROJECT_DIR$/search/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="5" column="52" selection-start-line="5" selection-start-column="52" selection-end-line="5" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/posts/routes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="629">
@@ -593,6 +615,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/search/routes.py" />
+<<<<<<< HEAD
 <<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/search/maps_scraper.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -604,11 +627,18 @@
         <state relative-caret-position="1343">
           <caret line="83" selection-start-line="83" selection-end-line="83" />
 >>>>>>> 55df884145d7617c28023eadb29b6d846c0148dd
+=======
+    <entry file="file://$PROJECT_DIR$/users/routes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="11" column="50" selection-start-line="11" selection-start-column="50" selection-end-line="11" selection-end-column="50" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/users/routes.py">
+    <entry file="file://$PROJECT_DIR$/search/forms.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         <state relative-caret-position="17">
@@ -642,6 +672,17 @@
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
+=======
+        <state relative-caret-position="51">
+          <caret line="5" column="52" selection-start-line="5" selection-start-column="52" selection-end-line="5" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/search/maps_scraper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="35" selection-start-line="35" selection-end-line="35" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
         </state>
       </provider>
     </entry>
@@ -693,21 +734,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="1" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="21" />
+        <state relative-caret-position="51">
+          <caret line="3" column="36" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/search/maps_scraper.py">
+    <entry file="file://$PROJECT_DIR$/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="986">
-          <caret line="59" column="105" selection-start-line="59" selection-start-column="101" selection-end-line="59" selection-end-column="105" />
+        <state relative-caret-position="506">
+          <caret line="97" column="80" selection-start-line="97" selection-start-column="80" selection-end-line="97" selection-end-column="80" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/search/scraper.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="1309">
+=======
+        <state relative-caret-position="17">
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
           <caret line="77" column="8" selection-start-line="77" selection-start-column="8" selection-end-line="77" selection-end-column="8" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -717,8 +762,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main/routes.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="297">
           <caret line="70" column="59" selection-start-line="70" selection-start-column="59" selection-end-line="70" selection-end-column="59" />
+=======
+        <state relative-caret-position="574">
+          <caret line="208" column="40" selection-start-line="208" selection-start-column="40" selection-end-line="208" selection-end-column="40" />
+>>>>>>> fe0af02588352a8838f82d4e5bead9bb50935fea
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
