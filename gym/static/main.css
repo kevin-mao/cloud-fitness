@@ -121,6 +121,7 @@ a.article-title:hover {
 
 .row{
     flex-direction: row;
+    background-color:black;
    
 }
 .left-box{
@@ -133,16 +134,41 @@ a.article-title:hover {
 }
 
 .background {
-    
+    position: relative;
+  z-index: 1;
     width:100%;
-    display: flex;
-    flex-direction: row;
-     background-image: url(slideshow/image1.jpg);
-    background-repeat: no-repeat;
-    background-size:cover;
-    padding:100px;
     
+     background-image: url(slideshow/image1.jpg);
+    background-size:cover;
+    background-position:center center;
+    
+    @include:dark-overlay; 
  
+}
+
+@mixin dark-overlay{
+  &:after{
+    content: "";
+    width: 50%;
+    height: auto;
+    position: absolute;
+    z-index: -1;  // Take note of this negative z-index and compare to each article's positive z-index. This helps your content to show up over the overlay.
+    top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+  }
+}
+
+.overlay{
+     display: flex;
+    flex-direction: row;
+    padding:100px;
+    background-color:rgba(0, 0, 0, 0.6);
+}
+
+.background:after{
+  background:rgba(0, 0, 0, 0.75);
 }
 
 .home_container{
@@ -156,32 +182,31 @@ a.article-title:hover {
 }
 
 .mb-4{
-    background-color:rgba(244, 244, 244, .9);
+    
     border-radius:3px;
     display:inline;
     width:40%;
-    border-width:1px;
-    border-color:darkgrey;
-    border-style: solid;
-    padding: 5px;
-    border-bottom: 1px solid darkgrey;
+    color:#ffffff;
+ 
 
 }
+
+
+
+
 
 .home-container border-bottom{
 
-    border-bottom: 1px solid darkgrey;
+    
+}
+
+.filter{
+    
 }
 
 
-
 .form-control-label{
-    background-color:rgba(244, 244, 244, .9);
-    border-radius:2px;
-     border-width: 1px;
-    border-color:darkgrey;
-    border-style: solid;
-    padding:5px;
+    color:#ffffff;
 }
 
 .col-md-box{
