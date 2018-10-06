@@ -4,6 +4,12 @@
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
         <legend class="border-bottom mb-4">Work out for free</legend>
+        
+<div id="stage">
+        <a><img src="{{ url_for('static', filename='slideshow/image1.jpg' )}}"/></a>
+        <a><img src="{{ url_for('static', filename='slideshow/image2.jpg' )}}"/></a>
+        <a><img src="{{ url_for('static', filename='slideshow/image3.jpg' )}}"/></a>
+</div>        
 
         <div class="nile-slider large-12 column" onload="fadeimages()">
 </div>
@@ -58,15 +64,14 @@
 
          <script type="text/javascript">// change header image after 2 seconds
     $(document).ready(function(){
-$('.your-class').slick({
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 2000,
-    fade:true,
-});
+    $('.your-class').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+        fade:true,
+    });
 
     </script>
    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&libraries=places&types=cities&callback=activatePlacesSearch"async defer>
-   </script>
 {% endblock content %}

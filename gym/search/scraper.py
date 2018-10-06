@@ -26,11 +26,9 @@ headers = {
 
 # will be imported from user's search in future
 def query_bing_search(location, gym_name):
-
     gym_link=gym_link_library(gym_name)
 
     if gym_link==None:
-        print("Gym: "+gym_name )
         search_url = "https://api.cognitive.microsoft.com/bing/v7.0/search"
         search_term = "free "+gym_name+" guest passes in "+location
         headers = {"Ocp-Apim-Subscription-Key":BING_KEY}

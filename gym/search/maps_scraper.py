@@ -13,6 +13,7 @@ except:
 
 assert API_KEY, BING_KEY
 
+
 #get coordinates of the location inputted so that we can accurately search for 
 def find_place(location):
     request_base = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?'
