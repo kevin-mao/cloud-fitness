@@ -41,7 +41,7 @@
     {% endfor %}
 	
 	</div><!-- this closes the column thatt contains results -->
-	<div class="col-sm" id='map' style="height: 600px; position: sticky;">
+	<div class="col-sm" id='map' style="height: 600px; width: auto; position: sticky;">
 	</div>
  </div><!-- this closes the row that contains everything-->
 
@@ -49,7 +49,7 @@
      <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; 
      	var markers = Object.create(null);;
         function initMap() {
-        
+        google.maps.event.trigger(map, 'resize');
         const Http = new XMLHttpRequest();
         const url=SCRIPT_ROOT + '/coordinates';
         Http.open("GET", url);
@@ -62,7 +62,6 @@
                 zoom: 12,
                 center: center
             });
-            google.maps.event.trigger(map, 'resize');
 
             var yourLocation = new google.maps.Marker({
                 position: center,

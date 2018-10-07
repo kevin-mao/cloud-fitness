@@ -137,7 +137,7 @@ a.article-title:hover {
     position: relative;
     z-index: 1;
     width:100%;
-    height:100vh;
+    height:100%;
     background-image: url(slideshow/image1.jpg);
     background-size:cover;
     background-position:center center;
@@ -163,7 +163,7 @@ a.article-title:hover {
 .overlay{
      display: flex;
     flex-direction: row;
-    padding:100px;
+    padding-top:10%;
     height:100vh;
     background-color:rgba(0, 0, 0, 0.6);
 }
@@ -207,9 +207,13 @@ a.article-title:hover {
 
 
 .search-label{
-    color:#ffffff;
+    color:white;
 }
 
 .col-md-box{
    width:100%;
+}
+
+.btn {
+  color: black;
 }
