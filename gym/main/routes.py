@@ -76,7 +76,7 @@ def search(query):
         center_lat, center_lng, data = maps_scrape(query)
         current_search = {'gym_id':[],'user_input':query,'lat':center_lat, 'lng':center_lng}
         search.insert_one(current_search)
-        print(current_search['_id'])
+        #print(current_search['_id'])
 
         if data != 0:
             # for each gym that is found

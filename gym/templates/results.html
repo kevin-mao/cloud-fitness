@@ -41,17 +41,17 @@
     {% endfor %}
 	
 	</div><!-- this closes the column thatt contains results -->
-	<div class="col-sm" id='map' style="height: 600px; width: auto; position: sticky;">
+	<div class="col-sm" id='map' style="height: 600px; width: 100%; position: sticky;">
 	</div>
  </div><!-- this closes the row that contains everything-->
 
 
-     <script> SCRIPT_ROOT = {{ request.script_root|tojson|safe }}; 
+     <script> 
      	var markers = Object.create(null);;
         function initMap() {
         google.maps.event.trigger(map, 'resize');
         const Http = new XMLHttpRequest();
-        const url=SCRIPT_ROOT + '/coordinates';
+        const url= '/coordinates';
         Http.open("GET", url);
         Http.send();
         Http.onreadystatechange=(e)=>{
@@ -137,7 +137,12 @@
                 }
                 
             }
+
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                window.scrollTo(0,document.querySelector("#map").scrollHeight+600);
+            }  
         }
+        //closing click
         else{
             for (gym in markers){ 
                 //set to normal every other marker
