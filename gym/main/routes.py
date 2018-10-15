@@ -25,6 +25,8 @@ try:
     print('using SECRET_KEY...')
 except: 
     API_KEY= os.environ['API_KEY']
+    print('using API_KEY...')
+print(API_KEY)
 assert API_KEY
 
 main = Blueprint('main', __name__)
