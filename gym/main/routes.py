@@ -21,7 +21,6 @@ import os
 # but if you're runing locally, just use regular one so os.environ['API_KEY']
 
 API_KEY= os.environ['SECRET_KEY']
-print(API_KEY)
 assert API_KEY
 
 main = Blueprint('main', __name__)
