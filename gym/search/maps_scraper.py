@@ -5,10 +5,11 @@ from boto.s3.connection import S3Connection
 import os
 import urllib.request
 
+#API KEY can be used by anyone, but secret cannot (put it in for js)
 try: 
     API_KEY, BING_KEY= S3Connection(os.environ['API_KEY'], os.environ['BING_KEY'])
 except: 
-    API_KEY= os.environ['API_KEY']
+    API_KEY = os.environ['API_KEY']
     BING_KEY = os.environ['BING_KEY']
 
 assert API_KEY, BING_KEY
@@ -20,7 +21,7 @@ def find_place(location):
     inputtype='textquery'
     fields='geometry,name'
     r = requests.get(request_base + 'input={}&inputtype={}&fields={}&key={}'.format(location,inputtype,fields,API_KEY)).json()
-    if r['status'] != 'ZERO_RESULTS' and r['status'] != 'OVER_QUERY_LIMIT':
+    if r['status'] == 'OK':
         lat = r['candidates'][0]['geometry']['location']['lat']
         lng = r['candidates'][0]['geometry']['location']['lng']
         name = r['candidates'][0]['name']

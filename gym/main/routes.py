@@ -17,14 +17,15 @@ import csv
 from boto.s3.connection import S3Connection
 import os
 
+# heroku machine will store two keys, a secret one for client-side js 
+# and a regular one for python since the server isnt viewable by user 
+# but if you're runing locally, just use regular one so os.environ['API_KEY']
 try: 
-    API_KEY= S3Connection(os.environ['API_KEY'])
+    API_KEY= S3Connection(os.environ['SECRET_KEY'])
 except: 
     API_KEY= os.environ['API_KEY']
 assert API_KEY
 
-
-API_KEY = os.environ['API_KEY']
 main = Blueprint('main', __name__)
 locations_coordinates = {}
 
@@ -76,7 +77,7 @@ def search(query):
         center_lat, center_lng, data = maps_scrape(query)
         current_search = {'gym_id':[],'user_input':query,'lat':center_lat, 'lng':center_lng}
         search.insert_one(current_search)
-        #print(current_search['_id'])
+        #   print(current_search['_id'])
 
         if data != 0:
             # for each gym that is found
