@@ -22,6 +22,7 @@ import os
 # but if you're runing locally, just use regular one so os.environ['API_KEY']
 try: 
     API_KEY= S3Connection(os.environ['SECRET_KEY'])
+    print('using SECRET_KEY...')
 except: 
     API_KEY= os.environ['API_KEY']
 assert API_KEY

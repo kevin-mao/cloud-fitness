@@ -5,7 +5,13 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from gym.config import Config
 from flask_pymongo import PyMongo
+from boto.s3.connection import S3Connection
+import os
 
+try: 
+    MONGODB= S3Connection(os.environ['MONGODB'])
+except: 
+    MONGODB= os.environ['MONGODB']
 
 db = SQLAlchemy()
 mongo = PyMongo()
@@ -19,8 +25,8 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['MONGO_DBNAME']='cloudfitness'
-    app.config['MONGO_URI']='mongodb://kevinmao:cornell2021@ds261332.mlab.com:61332/cloudfitness'
+    app.config['MONGO_DBNAME'] = 'cloudfitness'
+    app.config['MONGO_URI'] = MONGODB
     mongo.init_app(app)
     db.init_app(app)
 
