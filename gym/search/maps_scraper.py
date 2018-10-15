@@ -1,16 +1,12 @@
 import requests 
 import csv 
 import os 
-from boto.s3.connection import S3Connection
 import os
 import urllib.request
 
 #API KEY can be used by anyone, but secret cannot (put it in for js)
-try: 
-    API_KEY, BING_KEY= S3Connection(os.environ['API_KEY'], os.environ['BING_KEY'])
-except: 
-    API_KEY = os.environ['API_KEY']
-    BING_KEY = os.environ['BING_KEY']
+API_KEY = os.environ['API_KEY']
+BING_KEY = os.environ['BING_KEY']
 
 assert API_KEY, BING_KEY
 

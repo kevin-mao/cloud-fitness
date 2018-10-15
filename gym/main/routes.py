@@ -14,18 +14,13 @@ from flask_login import login_required
 from flask_pymongo import PyMongo
 import json
 import csv
-from boto.s3.connection import S3Connection
 import os
 
 # heroku machine will store two keys, a secret one for client-side js 
 # and a regular one for python since the server isnt viewable by user 
 # but if you're runing locally, just use regular one so os.environ['API_KEY']
-try: 
-    API_KEY= S3Connection(os.environ['SECRET_KEY'])
-    print('using SECRET_KEY...')
-except: 
-    API_KEY= os.environ['API_KEY']
-    print('using API_KEY...')
+
+API_KEY= os.environ['SECRET_KEY']
 print(API_KEY)
 assert API_KEY
 
