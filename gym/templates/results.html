@@ -46,9 +46,9 @@
  </div><!-- this closes the row that contains everything-->
 
 
-     <script> 
-     	var markers = Object.create(null);;
-        function initMap() {
+ <script> 
+ 	var markers = Object.create(null);
+    function initMap() {
         google.maps.event.trigger(map, 'resize');
         const Http = new XMLHttpRequest();
         const url= '/coordinates';
@@ -96,8 +96,7 @@
                     markers[gym_info['name']].push(marker);
                 }
             }
-                
-
+    
         }
 
     }
