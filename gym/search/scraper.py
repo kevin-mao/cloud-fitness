@@ -115,7 +115,7 @@ def blacklist(link):
         return False
 
 def scrape(location, gym_name):
-    gym_link = str(query_bing_search(location, gym_name))
+    gym_link = str(query_google_search(location, gym_name))
     gym_description = str(description(gym_name))
     results = [gym_link,gym_description]
 

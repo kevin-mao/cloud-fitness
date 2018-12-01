@@ -6,6 +6,42 @@
         	Search for more passes
         </button>   	
     </form>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Gym Pass</th>
+          <th scope="col">Description and Locations</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gym_id in current_search['gym_id'] %}
+            {% set current_gym = gym.find_one({'_id':gym_id}) %}
+            {% for info_id in current_gym['info_id'] %}
+                {% set current_info = info.find_one({'_id':info_id}) %}
+                {% if current_search['_id'] in current_info['search_id'] %}
+                    <tr>
+                      <th scope="row"><a class="article-title" href="{{ current_info['link']}}" target="_blank">{{ current_info['name'] }}</a></th>
+                      <td>{{current_info['description']}}
+                    
+                {% endif %}
+            {% endfor %}    
+            <a href="#" id = 'toggle {{gym.name}}' onclick="toggleHidden('sectiontohide {{current_gym['name']}}'); toggleFocus('{{current_gym['name']}}'); return false;">All locations</a>
+            <div class='locations' id='sectiontohide {{current_gym['name']}}' style="display: none;">                   
+                {% for location_id in current_gym['location_id'] %}
+                    {% set current_location = location.find_one({'_id':location_id}) %}
+                    {% if current_search['_id'] in current_location['search_id']%}
+                        <a href="{{current_location['link']}}" target="_blank" class="article-content"> 
+                             {{ current_location['address']}}
+                        </a>
+                    {% endif%}
+                {% endfor%}
+            </div>  
+            </td>
+            </tr>
+        {% endfor %}   
+      </tbody>
+    </table>
+<!-- 
     {% for gym_id in current_search['gym_id'] %}
     	{% set current_gym = gym.find_one({'_id':gym_id}) %}
 	   <article class="media content-section">
@@ -38,7 +74,7 @@
 			    </div> 
           	</div>
         </article>
-    {% endfor %}
+    {% endfor %} -->
 	
 	</div><!-- this closes the column thatt contains results -->
 	<div class="col-sm" id='map' style="height: 600px; width: 100%; position: sticky;">
@@ -157,7 +193,6 @@
         }
     }
  	</script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
+    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap">
     </script>
 {% endblock content %}

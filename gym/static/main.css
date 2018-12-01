@@ -217,3 +217,9 @@ a.article-title:hover {
 .btn {
   color: black;
 }
+
+.table .thead-dark th {
+    color: #fff;
+    background-color: #5f788a;;
+    border-color: #5f788a;;
+}
